@@ -1,0 +1,42 @@
+# for ocr module
+openvino
+paddlepaddle
+pyclipper
+shapely
+
+# for asr module
+sherpa_ncnn
+
+# for llm_match in text_analysis
+websocket_client
+
+# for correct_match in text_analysis
+pycorrector
+torch
+pandas
+transformers
+chardet
+
+# for crawler
+requests
+PyExecJS
+
+# for flask
+flask==2.2.5
+Werkzeug==2.3.7
+jinja2==3.1.2
+flask-login==0.6.2
+flask_migrate==4.0.4
+WTForms==3.0.1
+flask_wtf==1.2.1
+flask-sqlalchemy==3.0.5
+sqlalchemy==2.0.21
+email_validator==2.0.0
+flask-restx==1.1.0
+python-dotenv
+gunicorn==20.1.0
+Flask-Minify==0.37
+flask-socketio
+
+# for mysql
+pymysql

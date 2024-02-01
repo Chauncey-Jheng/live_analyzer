@@ -1,0 +1,196 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} 定制直播监测 {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- Ekko Lightbox -->
+  <link rel="stylesheet" href="/static/assets/plugins/ekko-lightbox/ekko-lightbox.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>定制直播监测</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">主页</a></li>
+              <li class="breadcrumb-item active">定制直播监测</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-warning">
+                    <div class="card-header">
+                      <h3 class="card-title">新增直播监控</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                      <form>
+                        <!-- input states -->
+                        <div class="form-group">
+                          <label class="col-form-label" for="inputSuccess"> 输入直播链接 </label>
+                          <input type="text" class="form-control" id="liveURL" placeholder="输入 ...">
+                        </div>
+                              
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <!-- select -->
+                            <div class="form-group">
+                              <label>选择平台</label>
+                              <select class="form-control">
+                                <option>抖音</option>
+                                <option>淘宝</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-offset-2 col-sm-10">
+                          <input type="button" class="btn btn-default" onclick="sendLiveInfo()" value="开始监测">
+                          <input type="button" class="btn btn-danger" onclick="stopLivePlay()" value="停止监测">
+                        </div>
+                      </form>
+                    </div>
+                    <!-- /.card-body -->
+                  </div>
+                  <!-- /.card -->
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-12">
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h4 class="card-title">当前监测任务</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                          <!-- <img class="img-fluid" src="/static/assets/img/baiyunshan.png" alt="Photo"> -->
+                          <video id="live_video" width="800" height="800" controls loop autoplay muted>
+                            <source id="live_video_src" src="" type="video/mp4">
+                          </video>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-6">
+                          <div class="row">
+                            <div class="col-12 callout callout-info">
+                                <h5>语音分析</h5>
+                                <p id="asr_result">example asr analysis.</p>
+                              </div>
+                          </div>
+                          <!-- /.row -->
+                          <div class="row">
+                            <div class="col-12 callout callout-info">
+                                <h5>图像识别</h5>
+                                <p id="ocr_result">example ocr analysis.</p>
+                              </div>
+                          </div>
+                          <!-- /.row -->
+                          <div class="row">
+                            <div class="col-12 callout callout-info">
+                                <h5>分析结果</h5>
+                                <p id="analysis">example analysis result.</p>
+                              </div>
+                          </div>
+                          <!-- /.row -->
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                      <!-- /.row -->
+                </div>
+              </div>
+            </div>
+          </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery UI -->
+  <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+  <!-- Ekko Lightbox -->
+  <script src="/static/assets/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="/static/assets/js/demo.js"></script>
+  <!-- Filterizr-->
+  <script src="/static/assets/plugins/filterizr/jquery.filterizr.min.js"></script>
+  <!-- socket.io -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+  <script>
+    var socket = io();
+
+    function sendLiveInfo() {
+        var liveURL = $("#liveURL").val();
+        if(liveURL == "") {
+          alert("直播链接不能为空！");
+          return;
+        }
+        var send = JSON.stringify({"liveURL":liveURL,"livePlatform":"douyin"})
+        console.log(send)
+        socket.emit('liveplay_client',{"liveURL":liveURL});
+    }
+    function stopLivePlay() {
+        socket.emit('stopliveplay',"stop");
+    }
+</script>
+
+
+<script type="text/javascript" charset="utf-8">
+
+    socket.on('connect', function() {
+        socket.emit('my event', {data: 'I\'m connected!'});
+    });
+    socket.on('message_from_server', function(data) {
+      console.log('收到来自服务器的消息:', data);
+    });
+    socket.on('liveplay_server', function(data) {
+      console.log('liveplay_server:', data)
+      console.log(data["live_video_path"])
+      $("#asr_result").text(data["asr_result"]);
+      $("#ocr_result").text(data["ocr_result"]);
+      $("#analysis").text(JSON.stringify(data["analysis"]))
+      $("#live_video_src").attr("src", data["live_video_path"])
+      document.getElementById("live_video").load();
+      document.getElementById("live_video").play();
+
+    })
+</script>
+
+{% endblock javascripts %}

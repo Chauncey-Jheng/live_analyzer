@@ -1,0 +1,9 @@
+2024-01-24 21:25:50.097 | WARNING  | crawl_utils:wrapper:17 - 错误信息: type: URLError, <urlopen error _ssl.c:989: The handshake operation timed out> in function get_bilibili_stream_data at line: 1351
+2024-01-24 21:25:50.099 | WARNING  | crawl_utils:wrapper:17 - 错误信息: type: AttributeError, 'list' object has no attribute 'get' in function get_bilibili_stream_url at line: 477
+2024-01-24 21:25:50.099 | WARNING  | __main__:start_record:993 - 错误信息: 'list' object has no attribute 'get' 发生错误的行数: 652
+2024-01-24 21:27:22.429 | WARNING  | crawl_utils:wrapper:17 - 错误信息: type: AttributeError, 'NoneType' object has no attribute 'group' in function get_bilibili_stream_data at line: 331
+2024-01-24 21:27:22.431 | WARNING  | crawl_utils:wrapper:17 - 错误信息: type: AttributeError, 'list' object has no attribute 'get' in function get_bilibili_stream_url at line: 477
+2024-01-24 21:27:22.432 | WARNING  | __main__:start_record:993 - 错误信息: 'list' object has no attribute 'get' 发生错误的行数: 652
+2024-01-24 21:29:23.867 | WARNING  | crawl_utils:wrapper:17 - 错误信息: type: AttributeError, 'NoneType' object has no attribute 'group' in function get_bilibili_stream_data at line: 331
+2024-01-24 21:29:23.868 | WARNING  | crawl_utils:wrapper:17 - 错误信息: type: AttributeError, 'list' object has no attribute 'get' in function get_bilibili_stream_url at line: 477
+2024-01-24 21:29:23.868 | WARNING  | __main__:start_record:993 - 错误信息: 'list' object has no attribute 'get' 发生错误的行数: 652

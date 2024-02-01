@@ -1,0 +1,253 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} 违法违规线索展示 {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+  <style>
+    .details-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 1200px;
+      height: 600px;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 1;
+  }
+  </style>
+
+{% endblock stylesheets %}
+
+{% block content %} 
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>违法违规线索展示</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="index.html">主页</a></li>
+              <li class="breadcrumb-item active">违法违规线索展示</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">违法违规线索记录</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="zhengjushipin" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+
+  <div id="detailpopup" class="details-popup">
+    <div class="card card-primary">
+      <div class="card-header">
+        <h4 class="card-title">线索详情</h4>
+        <span class="close-button" onclick="closeDetails()" style="float: right;  cursor: pointer;">关闭</span>
+      </div>
+      <div class="card-body">
+          <div class="row mb-3">
+              <div class="col-sm-6">
+                <!-- <img class="img-fluid" src="/static/assets/img/baiyunshan.png" alt="Photo"> -->
+                <video id="live_video" width="500" height="500" controls loop autoplay muted>
+                  <source id="live_video_src" src="" type="video/mp4">
+                </video>
+              </div>
+              <!-- /.col -->
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-12 callout callout-info">
+                      <h5>语音分析</h5>
+                      <p id="asr_result">example asr analysis.</p>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <div class="row">
+                  <div class="col-12 callout callout-info">
+                      <h5>图像识别</h5>
+                      <p id="ocr_result">example ocr analysis.</p>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <div class="row">
+                  <div class="col-12 callout callout-info">
+                      <h5>分析结果</h5>
+                      <p id="analysis">example analysis result.</p>
+                    </div>
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- /.col -->
+            </div>
+            <!-- /.row -->
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- DataTables -->
+  <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="/static/assets/js/demo.js"></script>
+
+  <!-- socket.io -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+  
+  <!-- page script -->
+  <script>
+    var clue_data;
+    $(document).ready(function () {
+      $.ajax({
+        url: '/get_zhengjushipin',
+        type: 'GET',
+        success: function(response) {
+            // 将数据填充到表格中
+            clue_data = response.data
+            var thead = $('#zhengjushipin thead tr');
+            for (var key of Object.keys(response.data[0])) {
+              if (key == '视频asr结果' || key == '视频ocr结果' || key == '视频文件地址') {
+                continue;
+              }
+              thead.append('<th>' + key + '</th>');
+            }
+            thead.append('<th>操作选项（人工审核）</th>');
+
+            var tbody = $('#zhengjushipin tbody');
+            response.data.forEach(function(item) {
+              var row = '<tr>';
+              var video_addr = '';
+              for (var key of Object.keys(item)) {
+                  if (key == '视频asr结果') {
+                    asr_result = item[key];
+                    continue;
+                  }
+                  if (key == '视频ocr结果') {
+                    ocr_result = item[key].replace(/ /g, '');
+                    continue;
+                  }
+                  if (key == '视频文件地址') {
+                    video_addr = item[key];
+                    continue;
+                  }
+                  var content = item[key];
+                  if (key == "线索内容") {
+                    clue_content = JSON.parse(item[key].replace(/'/g, '"'));
+                    if (clue_content["type"] != 0) {
+                      clue_content = JSON.stringify(clue_content["content"]).replace(/"/g,'');
+                      console.log(clue_content);
+                      content = clue_content;
+                    }
+                  }
+                  if (key == "直播间链接") {
+                    content = '<a target="_blank" href="' + item[key] + '">' + item[key] + '</a>'
+                  }
+                  row += '<td>' + content + '</td>';
+              }
+              var buttons = " <td>\
+                              <input type='button' class='btn btn-default' onclick=showDetails('"
+                            + video_addr + "','" + ocr_result + "','" + asr_result + "','" + clue_content + "'" +
+                            ") value='查看详情'>\
+                              <input type='button' class='btn btn-primary' onclick='' value='标记合格'>\
+                              <input type='button' class='btn btn-warning' onclick='' value='标记不合格'>\
+                              <input type='button' class='btn btn-danger' onclick='' value='删除'>\
+                              </td>\
+                            ";
+              row += buttons;
+              row += '</tr>';
+              tbody.append(row);
+          });
+            $("#zhengjushipin").DataTable({
+              "responsive": true,
+              "autoWidth": false,
+            });
+        },
+        error: function(error) {
+            console.log(error);
+        }
+      });
+    });
+
+  </script>
+
+  <script>
+    var socket = io();
+
+    function showDetails(video_addr,ocr_result, asr_result, content) {
+      document.getElementById("detailpopup").style.display = "block";
+      $('#live_video_src').attr("src", video_addr);
+      $('#ocr_result').text(ocr_result);
+      $('#asr_result').text(asr_result);
+      $('#analysis').text(content);
+      document.getElementById("live_video").load();
+      document.getElementById("live_video").play();
+    }
+
+    function closeDetails() {
+      document.getElementById("detailpopup").style.display = "none";
+    }
+  </script>
+
+{% endblock javascripts %}
