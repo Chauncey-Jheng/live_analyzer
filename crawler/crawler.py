@@ -25,11 +25,11 @@ if __name__ == "__main__":
         trace_error_decorator
     )
 else:
-    from crawler.web_rid import (
+    from .web_rid import (
         get_live_room_id,
         get_sec_user_id
     )
-    from crawler.crawl_utils import (
+    from .crawl_utils import (
         logger, check_md5,
         trace_error_decorator
     )

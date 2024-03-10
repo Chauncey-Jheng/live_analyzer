@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} 自动直播监测 {% endblock %} 
+{% block title %} 自动直播巡检 {% endblock %} 
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} {% endblock body_class %} 
@@ -54,12 +54,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>自动直播监测</h1>
+            <h1>自动直播巡检</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">主页</a></li>
-              <li class="breadcrumb-item active">自动直播监测</li>
+              <li class="breadcrumb-item active">自动直播巡检</li>
             </ol>
           </div>
         </div>
@@ -71,9 +71,31 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
+            <div class="card card-warning">
+              <div class="card-header">
+                <h3 class="card-title">检索含有目标关键词的直播，并加入到直播巡检队列中</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form>
+                  <!-- input states -->
+                  <div class="form-group">
+                    <label class="col-form-label" for="inputSuccess"> 输入关键词 </label>
+                    <input type="text" class="form-control" id="inputSuccess" placeholder="输入 ...">
+                  </div>
+  
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <input type="button" class="btn btn-default" onclick="sendLiveInfo()" value="搜索并加入监测">
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+  
+
             <div class="card card-primary">
               <div class="card-header">
-                <h4 class="card-title">监测任务队列</h4>
+                <h4 class="card-title">当前正在巡检直播</h4>
               </div>
               <div class="card-body">
                 <table id="jiancerenwuduilie" class="table table-bordered table-striped">
@@ -102,7 +124,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>VD官方旗舰店</td>
+                      <td>卡姿兰直播间</td>
                       <td>
                         <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
                       </td>
@@ -116,7 +138,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>VB官方旗舰店</td>
+                      <td>新西兰鱼油世家</td>
                       <td>
                         <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
                       </td>
@@ -134,8 +156,62 @@
               </div>
             </div>
 
-            <input type="button" class="btn btn-primary" onclick=showAddNewTaskByKeyword() value="通过关键词批量新增监控任务">
-            <input type="button" class="btn btn-primary" onclick=showAddNewTaskByURL() value="通过指定链接新增监控任务">
+            <div class="card card-success">
+              <div class="card-header">
+                <h4 class="card-title">历史巡检直播记录</h4>
+              </div>
+              <div class="card-body">
+                <table id="jiancelishijilu" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>直播名称</th>
+                      <th>直播间链接</th>
+                      <th>开始监控时间</th>
+                      <th>结束监控时间</th>
+                      <th>操作选项</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>VC官方旗舰店</td>
+                      <td>
+                        <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
+                      </td>
+                      <td>2023年12月23日12时23分12秒</td>
+                      <td>2023年12月24日12时23分12秒</td>
+                      <td>
+                        <input type="button" class="btn btn-default" onclick=showDetails() value="查看详情">
+                        <input type="button" class="btn btn-danger" onclick="" value="删除">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>卡姿兰直播间</td>
+                      <td>
+                        <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
+                      </td>
+                      <td>2023年12月23日12时23分12秒</td>
+                      <td>2023年12月24日12时23分12秒</td>
+                      <td>
+                        <input type="button" class="btn btn-default" onclick=showDetails() value="查看详情">
+                        <input type="button" class="btn btn-danger" onclick="" value="删除">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>新西兰鱼油世家</td>
+                      <td>
+                        <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
+                      </td>
+                      <td>2023年12月23日12时23分12秒</td>
+                      <td>2023年12月24日12时23分12秒</td>
+                      <td>
+                        <input type="button" class="btn btn-default" onclick=showDetails() value="查看详情">
+                        <input type="button" class="btn btn-danger" onclick="" value="删除">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
             <div id="detailpopup" class="details-popup">
               <div class="card card-primary">
@@ -182,81 +258,6 @@
               </div>
             </div>
 
-            <div id="AddNewTaskByKeyword" class="addtask-popup">
-              <div class="card card-warning">
-                <div class="card-header">
-                  <h3 class="card-title">检索含有目标关键词的直播，并加入到直播监测队列中</h3>
-                  <span class="close-button" onclick="closeAddNewTaskByKeyword()" style="float: right;  cursor: pointer;">关闭</span>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-  
-                  <form>
-                    <!-- input states -->
-                    <div class="form-group">
-                      <label class="col-form-label" for="inputSuccess"> 输入类型关键词 </label>
-                      <input type="text" class="form-control" id="inputSuccess" placeholder="输入 ...">
-                    </div>
-                          
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <!-- select -->
-                        <div class="form-group">
-                          <label>选择平台</label>
-                          <select class="form-control">
-                            <option>抖音</option>
-                            <option>淘宝</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-sm-offset-2 col-sm-10">
-                      <input type="button" class="btn btn-default" onclick="sendLiveInfo()" value="搜索并加入监测">
-                    </div>
-                  </form>
-                </div>
-                <!-- /.card-body -->
-              </div>
-            </div>
-
-            <div id="AddNewTaskByURL" class="addtask-popup">
-              <div class="card card-warning">
-                <div class="card-header">
-                  <h3 class="card-title">将链接对应的直播加入到直播监测队列中</h3>
-                  <span class="close-button" onclick="closeAddNewTaskByURL()" style="float: right;  cursor: pointer;">关闭</span>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-  
-                  <form>
-                    <!-- input states -->
-                    <div class="form-group">
-                      <label class="col-form-label" for="inputSuccess"> 输入链接 </label>
-                      <input type="text" class="form-control" id="inputSuccess" placeholder="输入 ...">
-                    </div>
-                          
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <!-- select -->
-                        <div class="form-group">
-                          <label>选择平台</label>
-                          <select class="form-control">
-                            <option>抖音</option>
-                            <option>淘宝</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-sm-offset-2 col-sm-10">
-                      <input type="button" class="btn btn-default" onclick="sendLiveInfo()" value="搜索并加入监测">
-                    </div>
-                  </form>
-                </div>
-                <!-- /.card-body -->
-              </div>
-            </div>
-
-
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -294,6 +295,13 @@
   <script>
     $(function () {
       $("#jiancerenwuduilie").DataTable({
+        "responsive": true,
+        "autoWidth": false,
+        "paging": false,
+      });
+    });
+    $(function () {
+      $("#jiancelishijilu").DataTable({
         "responsive": true,
         "autoWidth": false,
         "paging": false,

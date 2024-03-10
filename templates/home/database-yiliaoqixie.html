@@ -18,6 +18,22 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
 
+  <style>
+    .additem-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 1000px;
+      height: 600px;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 1;
+      overflow: auto;
+    }
+  </style>
+
 {% endblock stylesheets %}
 
 {% block content %} 
@@ -46,6 +62,106 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
+            <div class="card card-warning">
+              <div class="card-header">
+                <h4 class="card-title">新增记录</h4>
+              </div>
+              <div class="card-body">
+                <input type="button" class="btn btn-warning" onclick=showAddNewItem1() value="新增国产医疗器械（注册）记录">
+                <input type="button" class="btn btn-warning" onclick=showAddNewItem2() value="新增国产医疗器械（备案）记录">
+                <input type="button" class="btn btn-warning" onclick=showAddNewItem3() value="新增进口医疗器械（注册）记录">
+                <input type="button" class="btn btn-warning" onclick=showAddNewItem4() value="新增进口医疗器械（备案）记录">
+              </div>
+            </div>
+
+            <div id="AddNewItem1" class="additem-popup">
+              <div class="card card-warning">
+                <div class="card-header">
+                  <h3 class="card-title">新增记录</h3>
+                  <span class="close-button" onclick="closeAddNewItem1()" style="float: right;  cursor: pointer;">关闭</span>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+  
+                  <form>
+                    <!-- input states -->
+                    <div class="form-group" id="addNewItemForm1">
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <input type="button" class="btn btn-default" onclick="sendItemInfo1()" value="新增记录">
+                    </div>
+                  </form>
+                </div>
+                <!-- /.card-body -->
+              </div>
+            </div>
+
+            <div id="AddNewItem2" class="additem-popup">
+              <div class="card card-warning">
+                <div class="card-header">
+                  <h3 class="card-title">新增记录</h3>
+                  <span class="close-button" onclick="closeAddNewItem2()" style="float: right;  cursor: pointer;">关闭</span>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+  
+                  <form>
+                    <!-- input states -->
+                    <div class="form-group" id="addNewItemForm2">
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <input type="button" class="btn btn-default" onclick="sendItemInfo2()" value="新增记录">
+                    </div>
+                  </form>
+                </div>
+                <!-- /.card-body -->
+              </div>
+            </div>
+
+            <div id="AddNewItem3" class="additem-popup">
+              <div class="card card-warning">
+                <div class="card-header">
+                  <h3 class="card-title">新增记录</h3>
+                  <span class="close-button" onclick="closeAddNewItem3()" style="float: right;  cursor: pointer;">关闭</span>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+  
+                  <form>
+                    <!-- input states -->
+                    <div class="form-group" id="addNewItemForm3">
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <input type="button" class="btn btn-default" onclick="sendItemInfo3()" value="新增记录">
+                    </div>
+                  </form>
+                </div>
+                <!-- /.card-body -->
+              </div>
+            </div>
+
+            <div id="AddNewItem4" class="additem-popup">
+              <div class="card card-warning">
+                <div class="card-header">
+                  <h3 class="card-title">新增记录</h3>
+                  <span class="close-button" onclick="closeAddNewItem4()" style="float: right;  cursor: pointer;">关闭</span>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+  
+                  <form>
+                    <!-- input states -->
+                    <div class="form-group" id="addNewItemForm4">
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <input type="button" class="btn btn-default" onclick="sendItemInfo4()" value="新增记录">
+                    </div>
+                  </form>
+                </div>
+                <!-- /.card-body -->
+              </div>
+            </div>
+
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">国产医疗器械（注册）</h3>
@@ -150,15 +266,25 @@
           success: function(response) {
               // 将数据填充到表格中
               var thead = $('#guochanyiliaoqixiezhuce thead tr');
+              var formField = $('#addNewItemForm1');
               for (var key of Object.keys(response.data[0])) {
-                thead.append('<th>' + key + '</th>')
+                thead.append('<th>' + key + '</th>');
+                formField.append('<label class="col-form-label" for="' + key + '">' + key + '</label>');
+                formField.append('<input type="text" class="form-control" id="' + key + '" placeholder="输入 ...">')
               }
+              thead.append('<th>操作选项</th>');
               var tbody = $('#guochanyiliaoqixiezhuce tbody');
               response.data.forEach(function(item) {
                 var row = '<tr>'
                 for (var key of Object.keys(item)) {
                     row += '<td>' + item[key] + '</td>'
                 }
+                var buttons = " <td>\
+                  <input type='button' class='btn btn-warning' onclick='' value='编辑'>\
+                  <input type='button' class='btn btn-danger' onclick='' value='删除'>\
+                  </td>\
+                ";
+                row += buttons;
                 row += '</tr>';
                 tbody.append(row);
             });
@@ -178,15 +304,25 @@
           success: function(response) {
               // 将数据填充到表格中
               var thead = $('#guochanyiliaoqixiebeian thead tr');
+              var formField = $('#addNewItemForm2');
               for (var key of Object.keys(response.data[0])) {
-                thead.append('<th>' + key + '</th>')
+                thead.append('<th>' + key + '</th>');
+                formField.append('<label class="col-form-label" for="' + key + '">' + key + '</label>');
+                formField.append('<input type="text" class="form-control" id="' + key + '" placeholder="输入 ...">')
               }
+              thead.append('<th>操作选项</th>');
               var tbody = $('#guochanyiliaoqixiebeian tbody');
               response.data.forEach(function(item) {
                 var row = '<tr>'
                 for (var key of Object.keys(item)) {
                     row += '<td>' + item[key] + '</td>'
                 }
+                var buttons = " <td>\
+                  <input type='button' class='btn btn-warning' onclick='' value='编辑'>\
+                  <input type='button' class='btn btn-danger' onclick='' value='删除'>\
+                  </td>\
+                ";
+                row += buttons;
                 row += '</tr>';
                 tbody.append(row);
             });
@@ -206,15 +342,25 @@
           success: function(response) {
               // 将数据填充到表格中
               var thead = $('#jinkouyiliaoqixiezhuce thead tr');
+              var formField = $('#addNewItemForm3');
               for (var key of Object.keys(response.data[0])) {
-                thead.append('<th>' + key + '</th>')
+                thead.append('<th>' + key + '</th>');
+                formField.append('<label class="col-form-label" for="' + key + '">' + key + '</label>');
+                formField.append('<input type="text" class="form-control" id="' + key + '" placeholder="输入 ...">')
               }
+              thead.append('<th>操作选项</th>');
               var tbody = $('#jinkouyiliaoqixiezhuce tbody');
               response.data.forEach(function(item) {
                 var row = '<tr>'
                 for (var key of Object.keys(item)) {
                     row += '<td>' + item[key] + '</td>'
                 }
+                var buttons = " <td>\
+                  <input type='button' class='btn btn-warning' onclick='' value='编辑'>\
+                  <input type='button' class='btn btn-danger' onclick='' value='删除'>\
+                  </td>\
+                ";
+                row += buttons;
                 row += '</tr>';
                 tbody.append(row);
             });
@@ -234,15 +380,25 @@
           success: function(response) {
               // 将数据填充到表格中
               var thead = $('#jinkouyiliaoqixiebeian thead tr');
+              var formField = $('#addNewItemForm4');
               for (var key of Object.keys(response.data[0])) {
-                thead.append('<th>' + key + '</th>')
+                thead.append('<th>' + key + '</th>');
+                formField.append('<label class="col-form-label" for="' + key + '">' + key + '</label>');
+                formField.append('<input type="text" class="form-control" id="' + key + '" placeholder="输入 ...">')
               }
+              thead.append('<th>操作选项</th>');
               var tbody = $('#jinkouyiliaoqixiebeian tbody');
               response.data.forEach(function(item) {
                 var row = '<tr>'
                 for (var key of Object.keys(item)) {
                     row += '<td>' + item[key] + '</td>'
                 }
+                var buttons = " <td>\
+                  <input type='button' class='btn btn-warning' onclick='' value='编辑'>\
+                  <input type='button' class='btn btn-danger' onclick='' value='删除'>\
+                  </td>\
+                ";
+                row += buttons;
                 row += '</tr>';
                 tbody.append(row);
             });
@@ -258,6 +414,35 @@
   });
   </script>
   
+  <script>
+    function showAddNewItem1() {
+      document.getElementById("AddNewItem1").style.display = "block";
+    }
+    function closeAddNewItem1() {
+      document.getElementById("AddNewItem1").style.display = "none";
+    }
+    function showAddNewItem2() {
+      document.getElementById("AddNewItem2").style.display = "block";
+    }
+    function closeAddNewItem2() {
+      document.getElementById("AddNewItem2").style.display = "none";
+    }
+
+    function showAddNewItem3() {
+      document.getElementById("AddNewItem3").style.display = "block";
+    }
+    function closeAddNewItem3() {
+      document.getElementById("AddNewItem3").style.display = "none";
+    }
+
+    function showAddNewItem4() {
+      document.getElementById("AddNewItem4").style.display = "block";
+    }
+    function closeAddNewItem4() {
+      document.getElementById("AddNewItem4").style.display = "none";
+    }
+  </script>
+
   <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- DataTables -->

@@ -174,36 +174,23 @@ def checklen(text):
     return text
 
 import re
-def variant_word_match(sentence):
+def category_recognize(sentence):
     global answer
-    '''使用星火大模型对变体词进行识别匹配'''
+    '''使用星火大模型对商品类别进行识别匹配'''
     prompt = """
-    接下来将给出一段话，请识别出这段话中为了规避审查而表述的名词变体词，并给出对应原词。请注意，不要过度解读。你给出的反馈以以下形式给出：
-    变体词:词1，对应原词:词1原词;
-    变体词:词2，对应原词:词2原词;
-    ……
+    接下来将给出一段直播内容文本，请根据该直播内容文本，将其分类为化妆品、药品、保健品、医疗器械四类中的一类。如果不属于上述类别，判定为其他。你的回复不需要推理过程，只需要最终类别名称即可。
     
-    如果这段话中没有变体词，你只需返回“无”。
-    
-    要识别的话如下:\n
+    要识别的内容文本如下:\n
     """
     input = prompt + sentence
     text.clear
     question = checklen(getText("user",input))
     answer = ""
     main(appid,api_key,api_secret,Spark_url,domain,question)
-    # print(answer)
-    pattern_variant = r'变体词：(.*?)，对应原词：(.*?)[；。]'
-    matches = re.findall(pattern_variant, answer)
-    # print(matches)
-    # print(match_stc[0].strip())
-    # for match in matches:
-    #     variant_word = match[0].strip()
-    #     original_word = match[1].strip()
-
-    #     print(variant_word)
-    #     print(original_word)
-    return matches
+    print(answer)
+    if answer not in ('化妆品','药品','保健品','医疗器械'):
+        return None
+    return answer
 
 def split_chinese_string(input_string, max_length=100):
     result = []
@@ -225,8 +212,8 @@ def split_chinese_string(input_string, max_length=100):
     return result
 
 if __name__ == '__main__':
-#     txt = """我家去了你车开不进来我操
+    txt = """我家去了你车开不进来我操
 # 矿山突袭大金杯 暗区突围 突围·FAL上线 剩余时间 28:06 255 2 290 300 西北 330 23 msS 上场榜一：星 星雨晨风 108 禁止未成年消费 """
-    txt = "如果不是吃了我们的东西的话啊，他第二天就得去医院找白大褂了, 可见我们的产品具有显著的临某床意义, 对我们的心脑血某管都是很有好处的"
-    detected_variants = variant_word_match(txt)
+    # txt = "音量更加大清晰度更加高坐到一号链接没没有的功能三三色背光屏也是只有二号链接具备倒到通过三个颜色变板就能够轻松去分高低数二值红绿灯底怎么看咱们高低上就怎么看数字根本不用"
+    detected_variants = category_recognize(txt)
     print(detected_variants)

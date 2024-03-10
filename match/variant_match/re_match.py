@@ -72,7 +72,13 @@ def detect_complex_variant_words(text):
                                 combined_word = ''.join(before_combo + after_combo)
                                 words_pair = (variants, combined_word)
                                 detected_variants.append(words_pair)
-    return detected_variants
+    if len(detected_variants) == 0:
+        return None
+    match_case = detected_variants[0]
+    variant_word = match_case[0]
+    origin_word = match_case[1]
+    result = {"变体词":variant_word, "原词":origin_word}
+    return result
 
 if __name__ == "__main__":
     # 测试文本

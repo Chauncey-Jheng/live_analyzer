@@ -8,9 +8,9 @@ import openvino as ov
 import copy
 
 if __name__ == "__main__":
-    import pre_post_processing as processing 
+    import pre_post_processing
 else:
-    from ocr import pre_post_processing as processing
+    from . import pre_post_processing
 
 det_model_file_path = Path("ocr/model/ch_PP-OCRv3_det_infer/inference.pdmodel")
 
@@ -116,7 +116,7 @@ def prep_for_rec(dt_boxes, frame):
     img_crop_list = [] 
     for bno in range(len(dt_boxes)):
         tmp_box = copy.deepcopy(dt_boxes[bno])
-        img_crop = processing.get_rotate_crop_image(ori_im, tmp_box)
+        img_crop = pre_post_processing.get_rotate_crop_image(ori_im, tmp_box)
         img_crop_list.append(img_crop)
         
     img_num = len(img_crop_list)
@@ -169,7 +169,7 @@ def post_processing_detection(frame, det_results):
     """   
     ori_im = frame.copy()
     data = {'image': frame}
-    data_resize = processing.DetResizeForTest(data)
+    data_resize = pre_post_processing.DetResizeForTest(data)
     data_list = []
     keep_keys = ['image', 'shape']
     for key in keep_keys:
@@ -186,11 +186,11 @@ def post_processing_detection(frame, det_results):
     for batch_index in range(pred.shape[0]):
         src_h, src_w, ratio_h, ratio_w = shape_list[batch_index]
         mask = segmentation[batch_index]
-        boxes, scores = processing.boxes_from_bitmap(pred[batch_index], mask, src_w, src_h)
+        boxes, scores = pre_post_processing.boxes_from_bitmap(pred[batch_index], mask, src_w, src_h)
         boxes_batch.append({'points': boxes})
     post_result = boxes_batch
     dt_boxes = post_result[0]['points']
-    dt_boxes = processing.filter_tag_det_res(dt_boxes, ori_im.shape)    
+    dt_boxes = pre_post_processing.filter_tag_det_res(dt_boxes, ori_im.shape)    
     return dt_boxes
 
 # ### Main Processing Function for PaddleOCR [$\Uparrow$](#Table-of-content:)
@@ -251,7 +251,7 @@ def run_paddle_ocr(source, ocr_file_path, skip_frames=30):
             dt_boxes = post_processing_detection(frame, det_results)
 
             # Preprocess detection results for recognition.
-            dt_boxes = processing.sorted_boxes(dt_boxes)  
+            dt_boxes = pre_post_processing.sorted_boxes(dt_boxes)  
             batch_num = 6
             img_crop_list, img_num, indices = prep_for_rec(dt_boxes, frame)
 
@@ -270,7 +270,7 @@ def run_paddle_ocr(source, ocr_file_path, skip_frames=30):
                 rec_results = rec_compiled_model([norm_img_batch])[rec_output_layer]
 
                 # Postprocessing recognition results.
-                postprocess_op = processing.build_post_process(processing.postprocess_params)
+                postprocess_op = pre_post_processing.build_post_process(pre_post_processing.postprocess_params)
                 rec_result = postprocess_op(rec_results)
                 for rno in range(len(rec_result)):
                     rec_res[indices[beg_img_no + rno]] = rec_result[rno]   

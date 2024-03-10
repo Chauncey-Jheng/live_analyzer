@@ -94,7 +94,7 @@
               <div class="inner">
                 <h3>44</h3>
 
-                <p>头部主播数量</p>
+                <p>监控主播数量</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>
@@ -133,11 +133,27 @@
             </div>
           </div>
           <!-- ./col -->
+
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>1342</h3>
+
+                <p>变体词数量</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+            </div>
+          </div>
+          <!-- ./col -->
         </div>
         <!-- /.row -->
 
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
             <div class="card">
               <div class="card-header">
                 <h5 class="card-title">高频触发<strong>关键词</strong>统计信息</h5>
@@ -145,41 +161,32 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <div class="row">
-                  <div class="col-md-8">
-                    <p class="text-center">
-                      <strong>高频触发关键词词云</strong>
-                    </p>
+                  <p class="text-center">
+                    <strong>高频触发关键词词云</strong>
+                  </p>
 
-                    <div id="canvas-container" align="center">
-                      <canvas id="wordcloud_canvas" width="600px" height="300px"></canvas>
+                  <div id="canvas-container" align="center">
+                    <canvas id="wordcloud_canvas" width="600px" height="300px"></canvas>
                   </div>
-                    <!-- /.chart-responsive -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-md-4">
-                    <p class="text-center">
-                      <strong>高频触发关键词统计次数</strong>
-                    </p>
+                </div>
+                <div class="row">
+                  <p class="text-center">
+                    <strong>高频触发关键词统计次数</strong>
+                  </p>
 
-                    <div class="chart">
-                      <canvas id="barChart1" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    </div>
-
+                  <div class="chart">
+                    <canvas id="barChart1" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
                   </div>
-                  <!-- /.col -->
+                </div>
                 </div>
                 <!-- /.row -->
               </div>
               <!-- ./card-body -->
-            </div>
-            <!-- /.card -->
           </div>
+            <!-- /.card -->
           <!-- /.col -->
-        </div>
-        <!-- /.row -->
 
-        <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
             <div class="card">
               <div class="card-header">
                 <h5 class="card-title">高频触发<strong>变体词</strong>统计信息</h5>
@@ -187,38 +194,33 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <div class="row">
-                  <div class="col-md-8">
-                    <p class="text-center">
-                      <strong>高频触发变体词词云</strong>
-                    </p>
-
-                    <div id="canvas-container" align="center">
-                      <canvas id="wordcloud_canvas_2" width="600px" height="300px"></canvas>
+                  <p class="text-center">
+                    <strong>高频触发变体词词云</strong>
+                  </p>
+                  <div id="canvas-container" align="center">
+                    <canvas id="wordcloud_canvas_2" width="600px" height="300px"></canvas>
                   </div>
-                    <!-- /.chart-responsive -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-md-4">
-                    <p class="text-center">
-                      <strong>高频触发变体词统计次数</strong>
-                    </p>
-
-                    <div class="chart">
-                      <canvas id="barChart2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    </div>
-
-                  </div>
-                  <!-- /.col -->
                 </div>
+                <div class="row">
+                  <p class="text-center">
+                    <strong>高频触发变体词统计次数</strong>
+                  </p>
+                  <div class="chart">
+                    <canvas id="barChart2" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                  </div>
+                </div>
+              </div>
                 <!-- /.row -->
               </div>
               <!-- ./card-body -->
-            </div>
-            <!-- /.card -->
           </div>
+            <!-- /.card -->
+        </div>
           <!-- /.col -->
         </div>
         <!-- /.row -->
+
+
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->

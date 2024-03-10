@@ -17,6 +17,32 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
 
+  <style>
+    .details-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 1200px;
+      height: 600px;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+    .addtask-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 1000px;
+      height: 300px;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+  </style>
 {% endblock stylesheets %}
 
 {% block content %}
@@ -42,56 +68,149 @@
 
     <!-- Main content -->
     <section class="content">
+      <div class="container-fluid">
+
         <div class="row">
-            <div class="col-12">
-                <div class="card card-warning">
-                    <div class="card-header">
-                      <h3 class="card-title">新增直播监控</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                      <form>
-                        <!-- input states -->
-                        <div class="form-group">
-                          <label class="col-form-label" for="inputSuccess"> 输入直播链接 </label>
-                          <input type="text" class="form-control" id="liveURL" placeholder="输入 ...">
-                        </div>
-                              
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <!-- select -->
-                            <div class="form-group">
-                              <label>选择平台</label>
-                              <select class="form-control">
-                                <option>抖音</option>
-                                <option>淘宝</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-sm-offset-2 col-sm-10">
-                          <input type="button" class="btn btn-default" onclick="sendLiveInfo()" value="开始监测">
-                          <input type="button" class="btn btn-danger" onclick="stopLivePlay()" value="停止监测">
-                        </div>
-                      </form>
-                    </div>
-                    <!-- /.card-body -->
-                  </div>
-                  <!-- /.card -->
+          <div class="col-12">
+            <div class="card card-warning">
+              <div class="card-header">
+                <h4 class="card-title">新增监控任务</h4>
+              </div>
+              <div class="card-body">
+                <input type="button" class="btn btn-warning" onclick=showAddNewTaskByURL() value="通过指定链接新增监控任务">
+              </div>
+            </div>
+            <div class="card card-primary">
+              <div class="card-header">
+                <h4 class="card-title">直播监测队列</h4>
+              </div>
+              <div class="card-body">
+                <table id="jiancerenwuduilie" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>直播名称</th>
+                      <th>直播间链接</th>
+                      <th>当前直播状态</th>
+                      <th>当前监测状态</th>
+                      <th>操作选项</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>VC官方旗舰店</td>
+                      <td>
+                        <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
+                      </td>
+                      <td>停止直播</td>
+                      <td>停止监测</td>
+                      <td>
+                        <input type="button" class="btn btn-default" onclick=showDetails() value="查看详情">
+                        <input type="button" class="btn btn-primary" onclick="" value="开始监测">
+                        <input type="button" class="btn btn-warning" onclick="" value="停止监测">
+                        <input type="button" class="btn btn-danger" onclick="" value="删除">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>卡姿兰直播间</td>
+                      <td>
+                        <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
+                      </td>
+                      <td>停止直播</td>
+                      <td>停止监测</td>
+                      <td>
+                        <input type="button" class="btn btn-default" onclick=showDetails() value="查看详情">
+                        <input type="button" class="btn btn-primary" onclick="" value="开始监测">
+                        <input type="button" class="btn btn-warning" onclick="" value="停止监测">
+                        <input type="button" class="btn btn-danger" onclick="" value="删除">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>新西兰鱼油世家</td>
+                      <td>
+                        <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
+                      </td>
+                      <td>停止直播</td>
+                      <td>停止监测</td>
+                      <td>
+                        <input type="button" class="btn btn-default" onclick=showDetails() value="查看详情">
+                        <input type="button" class="btn btn-primary" onclick="" value="开始监测">
+                        <input type="button" class="btn btn-warning" onclick="" value="停止监测">
+                        <input type="button" class="btn btn-danger" onclick="" value="删除">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
-        </div>
-        <div class="row">
-            <div class="col-12">
+            <div class="card card-success">
+              <div class="card-header">
+                <h4 class="card-title">定制直播监控历史记录</h4>
+              </div>
+              <div class="card-body">
+                <table id="jiancelishijilu" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>直播名称</th>
+                      <th>直播间链接</th>
+                      <th>开始监控时间</th>
+                      <th>结束监控时间</th>
+                      <th>操作选项</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>VC官方旗舰店</td>
+                      <td>
+                        <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
+                      </td>
+                      <td>2023年12月23日12时23分12秒</td>
+                      <td>2023年12月24日12时23分12秒</td>
+                      <td>
+                        <input type="button" class="btn btn-default" onclick=showDetails() value="查看详情">
+                        <input type="button" class="btn btn-danger" onclick="" value="删除">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>卡姿兰直播间</td>
+                      <td>
+                        <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
+                      </td>
+                      <td>2023年12月23日12时23分12秒</td>
+                      <td>2023年12月24日12时23分12秒</td>
+                      <td>
+                        <input type="button" class="btn btn-default" onclick=showDetails() value="查看详情">
+                        <input type="button" class="btn btn-danger" onclick="" value="删除">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>新西兰鱼油世家</td>
+                      <td>
+                        <a href="https://live.douyin.com/815349576986" target="_blank">https://live.douyin.com/815349576986</a>
+                      </td>
+                      <td>2023年12月23日12时23分12秒</td>
+                      <td>2023年12月24日12时23分12秒</td>
+                      <td>
+                        <input type="button" class="btn btn-default" onclick=showDetails() value="查看详情">
+                        <input type="button" class="btn btn-danger" onclick="" value="删除">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="detailpopup" class="details-popup">
               <div class="card card-primary">
                 <div class="card-header">
                   <h4 class="card-title">当前监测任务</h4>
+                  <span class="close-button" onclick="closeDetails()" style="float: right;  cursor: pointer;">关闭</span>
                 </div>
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-sm-6">
                           <!-- <img class="img-fluid" src="/static/assets/img/baiyunshan.png" alt="Photo"> -->
-                          <video id="live_video" width="800" height="800" controls loop autoplay muted>
+                          <video id="live_video" width="500" height="500" controls loop autoplay muted>
                             <source id="live_video_src" src="" type="video/mp4">
                           </video>
                         </div>
@@ -125,7 +244,47 @@
                 </div>
               </div>
             </div>
+
+            <div id="AddNewTaskByURL" class="addtask-popup">
+              <div class="card card-warning">
+                <div class="card-header">
+                  <h3 class="card-title">将链接对应的直播加入到直播监测队列中</h3>
+                  <span class="close-button" onclick="closeAddNewTaskByURL()" style="float: right;  cursor: pointer;">关闭</span>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+  
+                  <form>
+                    <!-- input states -->
+                    <div class="form-group">
+                      <label class="col-form-label" for="inputSuccess"> 输入链接 </label>
+                      <input type="text" class="form-control" id="inputSuccess" placeholder="输入 ...">
+                    </div>
+                          
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <!-- select -->
+                        <div class="form-group">
+                          <label>选择平台</label>
+                          <select class="form-control">
+                            <option>抖音</option>
+                            <option>淘宝</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <input type="button" class="btn btn-default" onclick="sendLiveInfo()" value="搜索并加入监测">
+                    </div>
+                  </form>
+                </div>
+                <!-- /.card-body -->
+              </div>
+            </div>
+
+
           </div>
+        </div>
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
@@ -151,46 +310,50 @@
   <script src="/static/assets/js/demo.js"></script>
   <!-- Filterizr-->
   <script src="/static/assets/plugins/filterizr/jquery.filterizr.min.js"></script>
-  <!-- socket.io -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
+  <!-- DataTables -->
+  <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
   <script>
-    var socket = io();
-
-    function sendLiveInfo() {
-        var liveURL = $("#liveURL").val();
-        if(liveURL == "") {
-          alert("直播链接不能为空！");
-          return;
-        }
-        var send = JSON.stringify({"liveURL":liveURL,"livePlatform":"douyin"})
-        console.log(send)
-        socket.emit('liveplay_client',{"liveURL":liveURL});
-    }
-    function stopLivePlay() {
-        socket.emit('stopliveplay',"stop");
-    }
-</script>
-
-
-<script type="text/javascript" charset="utf-8">
-
-    socket.on('connect', function() {
-        socket.emit('my event', {data: 'I\'m connected!'});
+    $(function () {
+      $("#jiancerenwuduilie").DataTable({
+        "responsive": true,
+        "autoWidth": false,
+        "paging": false,
+      });
     });
-    socket.on('message_from_server', function(data) {
-      console.log('收到来自服务器的消息:', data);
+    $(function () {
+      $("#jiancelishijilu").DataTable({
+        "responsive": true,
+        "autoWidth": false,
+        "paging": false,
+      });
     });
-    socket.on('liveplay_server', function(data) {
-      console.log('liveplay_server:', data)
-      console.log(data["live_video_path"])
-      $("#asr_result").text(data["asr_result"]);
-      $("#ocr_result").text(data["ocr_result"]);
-      $("#analysis").text(JSON.stringify(data["analysis"]))
-      $("#live_video_src").attr("src", data["live_video_path"])
-      document.getElementById("live_video").load();
-      document.getElementById("live_video").play();
+  </script>
 
-    })
-</script>
+  <script>
+    function showDetails() {
+      document.getElementById("detailpopup").style.display = "block";
+    }
+    function closeDetails() {
+      document.getElementById("detailpopup").style.display = "none";
+    }
 
+    function showAddNewTaskByKeyword() {
+      document.getElementById("AddNewTaskByKeyword").style.display = "block";
+    }
+    function closeAddNewTaskByKeyword() {
+      document.getElementById("AddNewTaskByKeyword").style.display = "none";
+    }
+    function showAddNewTaskByURL() {
+      document.getElementById("AddNewTaskByURL").style.display = "block";
+    }
+    function closeAddNewTaskByURL() {
+      document.getElementById("AddNewTaskByURL").style.display = "none";
+    }
+
+  </script>
 {% endblock javascripts %}
