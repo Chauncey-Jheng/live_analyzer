@@ -1,11 +1,13 @@
-import pymysql
+# import pymysql
+import sqlite3
 
 class DAO:
     def __init__(self,host="localhost",user="root",password="Zcx010712",database="live_analyzer") -> None:
         '''
         初始化数据库
         '''
-        self.db = pymysql.connect(host=host,user=user,password=password,database=database)
+        # self.db = pymysql.connect(host=host,user=user,password=password,database=database)
+        self.db = sqlite3.connect("live_analyzer_database.db")
     
     def close(self):
         '''
@@ -17,14 +19,27 @@ class DAO:
         '''
         获得制定表格的字段名称
         '''
+        # for mysql
+        # sql = '''
+        # SHOW COLUMNS FROM {table_name};
+        # '''.format(table_name = table_name)
+
+        # for sqlite
         sql = '''
-        SHOW COLUMNS FROM {table_name};
+        PRAGMA table_info({table_name});
         '''.format(table_name = table_name)
+
         cursor = self.db.cursor()
         cursor.execute(sql)
         result = cursor.fetchall()
         # print(result)
-        column_names = [row[0] for row in result]
+        
+        #for mysql
+        # column_names = [row[0] for row in result]
+
+        #for sqlite
+        column_names = [column[1] for column in result]
+        
         return column_names
 
     def get_证据视频(self):
@@ -265,23 +280,23 @@ class DAO:
 if __name__ == "__main__":
     dao = DAO()
 
-    video_path = 'static/video/variant/新西兰鱼油世家/新西兰鱼油世家4.mp4'
-    ocr_path = "BIO-H|新西兰鱼油世家  98.99 RTG结构 IFOS 高纯度 高吸收 五星鱼油 "
-    asr_path = "形态代表着什么吸某受率像一个产品它的含量高含量再高如果说他们吸收不好的话我吃到肚子里边他打折够大个比方打了个三折打了个五折吃跟没吃其实它的区别并不是很大像很多很多中老年人咱们在上了年纪以后小肠小胃这块动力这块他肯定是跟咱们十几二十岁啊"
-    content = {
-        'type':2, 
-        'content':{
-            '变体词':'小肠小胃',
-            '原词':'肠胃',
-            '匹配方式':'正则表达式'
-            }
-        }
-    from datetime import datetime
-    current_time = datetime.now()
-    formatted_time = current_time.strftime("%Y-%m-%d_%H:%M:%S")
-    live_url = ""
-    live_name = "新西兰鱼油世家"
-    dao.insert_证据视频(video_path, ocr_path, asr_path, str(content),formatted_time,live_url,live_name)
+    # video_path = 'static/video/variant/新西兰鱼油世家/新西兰鱼油世家4.mp4'
+    # ocr_path = "BIO-H|新西兰鱼油世家  98.99 RTG结构 IFOS 高纯度 高吸收 五星鱼油 "
+    # asr_path = "形态代表着什么吸某受率像一个产品它的含量高含量再高如果说他们吸收不好的话我吃到肚子里边他打折够大个比方打了个三折打了个五折吃跟没吃其实它的区别并不是很大像很多很多中老年人咱们在上了年纪以后小肠小胃这块动力这块他肯定是跟咱们十几二十岁啊"
+    # content = {
+    #     'type':2, 
+    #     'content':{
+    #         '变体词':'小肠小胃',
+    #         '原词':'肠胃',
+    #         '匹配方式':'正则表达式'
+    #         }
+    #     }
+    # from datetime import datetime
+    # current_time = datetime.now()
+    # formatted_time = current_time.strftime("%Y-%m-%d_%H:%M:%S")
+    # live_url = ""
+    # live_name = "新西兰鱼油世家"
+    # dao.insert_证据视频(video_path, ocr_path, asr_path, str(content),formatted_time,live_url,live_name)
     print(dao.get_证据视频())
 
     # print(dao.get_专项变体词())
