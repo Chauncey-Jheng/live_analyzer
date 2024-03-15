@@ -39,7 +39,7 @@ class DAO:
 
         #for sqlite
         column_names = [column[1] for column in result]
-        
+
         return column_names
 
     def get_证据视频(self):
@@ -277,6 +277,121 @@ class DAO:
         cursor.close()
         return result
     
+    def get_直播实体池(self):
+        '''
+        从数据库中获取直播实体池
+        '''
+        sql = """
+        select * from 直播实体池;
+        """
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+    
+    
+    def get_定制直播实体(self):
+        '''
+        从数据库中获取定制直播实体
+        '''
+        sql = """
+        select * from 定制直播实体;
+        """
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+
+    def get_定制直播历史(self):
+        '''
+        从数据库中获取定制直播历史
+        '''
+        sql = """
+        select * from 定制直播历史;
+        """
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+    
+    def get_巡检直播实体(self):
+        '''
+        从数据库中获取巡检直播实体
+        '''
+        sql = """
+        select * from 巡检直播实体;
+        """
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+    
+    def get_巡检直播历史(self):
+        '''
+        从数据库中获取巡检直播历史
+        '''
+        sql = """
+        select * from 巡检直播历史;
+        """
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+    
+
+    def insert(self,table_name,**kargs):
+        '''
+        向数据库指定表中插入数据
+        '''
+        values = ""
+        keys = ""
+        for i in list(kargs.values())[:-1]:
+            values += "'" + i + "',"
+        values += "'" + list(kargs.values())[-1] + "'"
+        for i in list(kargs)[:-1]:
+            keys += i + ","
+        keys += list(kargs)[-1]
+        sql = """
+        insert into {table_name}({keys})
+        values({values})
+        """.format(table_name = table_name, keys = keys, values = values)
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        self.db.commit()
+        cursor.close()
+
+    def delete(self,table_name,**kargs):
+        '''
+        在数据库指定表中删除指定数据
+        要求字段属性必须全为字符形式
+        '''
+        values = list(kargs.values())
+        keys = list(kargs)
+        conditions = ""
+        num = len(values)
+        for i in range(num-1):
+            conditions += keys[i] + "='" + values[i] + "' and "
+        conditions += keys[num-1] + "='" + values[num-1] + "'"
+        sql = """
+        delete from {table_name}
+        where {conditions};
+        """.format(table_name = table_name, conditions = conditions)
+        print(sql)
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        self.db.commit()
+        cursor.close()
+
+    # def update(self, table_name, **kargs):
+    #     '''
+    #     在数据库指定表中更新
+    #     '''
+
 if __name__ == "__main__":
     dao = DAO()
 
@@ -297,10 +412,13 @@ if __name__ == "__main__":
     # live_url = ""
     # live_name = "新西兰鱼油世家"
     # dao.insert_证据视频(video_path, ocr_path, asr_path, str(content),formatted_time,live_url,live_name)
-    print(dao.get_证据视频())
+    # print(dao.get_证据视频())
 
     # print(dao.get_专项变体词())
     # dao.delete_证据视频_by_线索内容("0")
 
     # print(list(dao.get_保健品())[0][0])
     # print([i[0] for i in dao.get_通用敏感词()])
+
+    dao.insert("直播实体池",直播名称="name_test_2",直播链接="url_test_2")
+    # dao.delete("直播实体池",直播名称="name_test_2",直播链接="url_test_2")

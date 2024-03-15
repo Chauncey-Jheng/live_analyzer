@@ -1,0 +1,277 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} 直播实体管理 {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+  <style>
+    .additem-popup {
+      display: none;
+      position: fixed;
+      top: 35%;
+      left: 50%;
+      width: 1000px;
+      height: 600px;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 1;
+      overflow: auto;
+    }
+  </style>
+
+{% endblock stylesheets %}
+
+{% block content %} 
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>直播实体管理</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="index.html">主页</a></li>
+              <li class="breadcrumb-item active">直播实体管理</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-warning">
+              <div class="card-header">
+                <h4 class="card-title">新增记录</h4>
+              </div>
+              <div class="card-body">
+                <input type="button" class="btn btn-warning" onclick=showAddNewItem() value="新增记录">
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">直播实体</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="zhiboshiti" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <div id="AddNewItem" class="additem-popup">
+              <div class="card card-warning">
+                <div class="card-header">
+                  <h3 class="card-title">新增记录</h3>
+                  <span class="close-button" onclick="closeAddNewItem()" style="float: right;  cursor: pointer;">关闭</span>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+  
+                  <form>
+                    <!-- input states -->
+                    <div class="form-group" id="addNewItemForm">
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <input type="button" class="btn btn-default" onclick=sendItemInfo() value="新增记录">
+                    </div>
+                  </form>
+                </div>
+                <!-- /.card-body -->
+              </div>
+            </div>
+
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+
+  <!-- page script -->
+  <script>
+    $(document).ready(function() {
+        // 发送Ajax请求获取用户数据
+        $.ajax({
+            url: '/get_zhiboshitichi_field',
+            type: 'GET',
+            success: function(response) {
+                // 将数据填充到表格中
+                console.log(response)
+                var formField = $('#addNewItemForm');
+                for (const key of response.data) {
+                  formField.append('<label class="col-form-label" for="' + key + '">' + key + '</label>');
+                  formField.append('<input type="text" class="form-control" id="' + key + '" placeholder="输入 ...">')
+                }
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+        $.ajax({
+          url: '/get_zhiboshitichi',
+          type: 'GET',
+          success: function(response) {
+              // 将数据填充到表格中
+              console.log(response)
+              var thead = $('#zhiboshiti thead tr');
+              for (var key of Object.keys(response.data[0])) {
+                thead.append('<th>' + key + '</th>');
+              }
+              thead.append('<th>操作选项</th>');
+
+              var tbody = $('#zhiboshiti tbody');
+              response.data.forEach(function(item) {
+                var row = '<tr>';
+                
+                for (var key of Object.keys(item)) {
+                    row += '<td>' + item[key] + '</td>';
+                }
+                var args_for_button = JSON.stringify(item);
+                var buttons = " <td>\
+                  <input type='button' class='btn btn-danger' onclick=deleteItem("+args_for_button+") value='删除'>\
+                  </td>\
+                ";
+                row += buttons;
+                row += '</tr>';
+                tbody.append(row);
+            });
+              $("#zhiboshiti").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+              });
+          },
+          error: function(error) {
+              console.log(error);
+          }
+      });
+  });
+  </script>
+  
+  <script>
+    function showAddNewItem() {
+      document.getElementById("AddNewItem").style.display = "block";
+    }
+    function closeAddNewItem() {
+      document.getElementById("AddNewItem").style.display = "none";
+    }
+    function sendItemInfo() {
+      var divElement = document.getElementById("addNewItemForm");
+      var inputElements = divElement.getElementsByTagName('input');
+      var inputIds = [];
+      var inputValues = [];
+      var isEmpty = false;
+      var inputInfo = {};
+      for (var i = 0; i < inputElements.length; i++) {
+        var inputId = inputElements[i].id;
+        var inputValue = inputElements[i].value;
+        if (inputValue == '') {
+          isEmpty = true;
+        }
+        inputIds.push(inputId);
+        inputValues.push(inputValue);
+        inputInfo[inputId] = inputValue;
+      }
+      if (isEmpty == true) {
+        alert("输入信息不完整!");
+        return;
+      }
+      dataToSend = {
+        tableName:'直播实体池',
+        record:inputInfo
+      }
+      // console.log(dataToSend);
+      event.preventDefault();
+      $.ajax({
+        type:"POST",
+        url:"/insert",
+        contentType: 'application/json',
+        data: JSON.stringify(dataToSend),
+        success:function(response) {
+          console.log(response);
+
+        },
+        error: function(xhr,status,error) {
+          console.log(error);
+        }
+      })
+      location.reload();
+    }
+    function deleteItem(item) {
+      dataToSend = {
+        tableName:'直播实体池',
+        record:item
+      }
+
+      $.ajax({
+        type:"POST",
+        url:"/delete",
+        contentType: 'application/json',
+        data: JSON.stringify(dataToSend),
+        success:function(response) {
+          console.log(response);
+        },
+        error: function(xhr,status,error) {
+          console.log(error);
+        }
+      })
+      location.reload();
+    }
+  </script>
+
+  <!-- Bootstrap 4 -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- DataTables -->
+  <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="/static/assets/js/demo.js"></script>
+
+
+{% endblock javascripts %}

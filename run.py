@@ -149,6 +149,79 @@ def get_jinkouyiliaoqixiebeian():
     dao.close()
     return jsonify(data = table_b)
 
+@app.route('/get_zhiboshitichi',methods=['GET'])
+def get_zhiboshitichi():
+    dao = DAO()
+    table_a = dao.get_直播实体池()
+    field_names = dao.get_字段名("直播实体池")
+    table_b = [dict(zip(field_names, i)) for i in table_a]
+    dao.close()
+    return jsonify(data = table_b)
+
+@app.route('/get_zhiboshitichi_field',methods=['GET'])
+def get_zhiboshitichi_field():
+    dao = DAO()
+    field_names = dao.get_字段名("直播实体池")
+    dao.close()
+    return jsonify(data = field_names)
+
+@app.route('/get_dingzhizhiboshiti',methods=['GET'])
+def get_dingzhizhiboshiti():
+    dao = DAO()
+    table_a = dao.get_定制直播实体()
+    field_names = dao.get_字段名("定制直播实体")
+    table_b = [dict(zip(field_names, i)) for i in table_a]
+    dao.close()
+    return jsonify(data = table_b)
+
+@app.route('/get_xunjianzhiboshiti',methods=['GET'])
+def get_xunjianzhiboshiti():
+    dao = DAO()
+    table_a = dao.get_巡检直播实体()
+    field_names = dao.get_字段名("巡检直播实体")
+    table_b = [dict(zip(field_names, i)) for i in table_a]
+    dao.close()
+    return jsonify(data = table_b)
+
+@app.route('/get_dingzhizhibolishi',methods=['GET'])
+def get_dingzhizhibolishi():
+    dao = DAO()
+    table_a = dao.get_定制直播历史()
+    field_names = dao.get_字段名("定制直播历史")
+    table_b = [dict(zip(field_names, i)) for i in table_a]
+    dao.close()
+    return jsonify(data = table_b)
+
+@app.route('/get_xunjianzhibolishi',methods=['GET'])
+def get_xunjianzhibolishi():
+    dao = DAO()
+    table_a = dao.get_巡检直播历史()
+    field_names = dao.get_字段名("巡检直播历史")
+    table_b = [dict(zip(field_names, i)) for i in table_a]
+    dao.close()
+    return jsonify(data = table_b)
+
+@app.route('/insert',methods=['POST'])
+def insert():
+    data = request.json
+    print(data)
+    tableName = data['tableName']
+    record = data['record']
+    dao = DAO()
+    dao.insert(tableName,**record)
+    return jsonify({'message':'Live data received successfully!'})
+
+@app.route('/delete',methods=['POST'])
+def delete():
+    data = request.json
+    print(data)
+    tableName = data['tableName']
+    record = data['record']
+    dao = DAO()
+    dao.delete(tableName,**record)
+    return jsonify({'message':'Live data received successfully!'})
+
+
 @app.route('/<template>')
 def route_template(template):
 
