@@ -1,16 +1,11 @@
 import re
 import itertools
-# 读取敏感词库文件的函数
-# def read_sensitive_words(file_path):
-#     with open(file_path, 'r', encoding="utf-8") as file:
-#         return [line.strip() for line in file.readlines()]
 
-# 敏感词库文件路径
-# sensitive_words_file_path = 'text_analysis\\违禁词表.txt'
+# 读取敏感词库
+from dao.dao import DAO
+dao = DAO()
+sensitive_words = [i[0] for i in dao.get_通用敏感词()]
 
-# 从文件读取敏感词库
-# sensitive_words = read_sensitive_words(sensitive_words_file_path)
-sensitive_words = ["最","临床"]
 # 变体词正则表达式
 # variant_patterns = [
 #     r'[\u4e00-\u9fa5]某[\u4e00-\u9fa5]',  # *某* 形式
@@ -48,7 +43,13 @@ def detect_complex_variant_words_in_sensitive(text):
                                 variants = ''.join(before_combo + tuple(variant_class[ind]) + after_combo)
                                 words_pair = (variants, combined_word)
                                 detected_variants.append(words_pair)
-    return detected_variants
+    if len(detected_variants) == 0:
+        return None
+    match_case = detected_variants[0]
+    variant_word = match_case[0]
+    origin_word = match_case[1]
+    result = {"变体词":variant_word, "原词":origin_word}
+    return result
 
 def detect_complex_variant_words(text):
     '''监测并处理变体词'''

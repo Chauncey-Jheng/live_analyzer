@@ -1,13 +1,23 @@
+# import sys
+# sys.path.append("match/ban_sale_match/")
+# sys.path.append("match/goods_match/")
+# sys.path.append("match/sensitive_word_match/")
+# sys.path.append("match/variant_match/")
+# import sensitive_word_match
+# import hierarchical_match
+# import ban_sale_match
+# import goods_conflict_match
+
 if __name__ == "__main__":
     from sensitive_word_match import sensitive_word_match
     from variant_match import hierarchical_match
     from ban_sale_match import ban_sale_match
-    from goods_match import goods_limit_time_match
+    from goods_match import goods_conflict_match
 else:
     from .sensitive_word_match import sensitive_word_match
     from .variant_match import hierarchical_match
     from .ban_sale_match import ban_sale_match
-    from .goods_match import goods_limit_time_match
+    from .goods_match import goods_conflict_match
 
 import configparser
 config_file = './match/config.ini'
@@ -43,7 +53,7 @@ def text_analysis(txt:str):
             return ban_sale_match_result
     
     if(is_open_goods_match == '是'):
-        goods_match_result = goods_limit_time_match.match_goods_limit_time(txt)
+        goods_match_result = goods_conflict_match.match_goods_limit_time(txt)
         if goods_match_result['type'] != 0:
             return goods_match_result
 
