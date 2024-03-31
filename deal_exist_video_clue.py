@@ -28,7 +28,8 @@ for path,dirs,files in walk:
                     ocr_txt = f.read()
                 txt = asr_txt + ' ' + ocr_txt
                 result = match.text_analysis(txt)
-                category = category_recognize.category_recognize(txt)
+                # category = category_recognize.category_recognize(txt) 
+                category = None
                 print("result:",result)
                 print("category:",category)
                 result_json = str(result)

@@ -181,8 +181,8 @@ def variant_word_match(sentence):
 
     mutli_prompt = """
     请识别出这段话中为了规避审查而表述的名词变体词，并给出对应原词。请注意，不要过度解读。你给出的反馈以以下形式给出：
-    变体词:词1，原词:词1原词;
-    变体词:词2，原词:词2原词;
+    变体词：词1，原词：词1原词;
+    变体词：词2，原词：词2原词;
     ……
     
     如果这段话中没有变体词，你只需返回“无”。
@@ -191,7 +191,7 @@ def variant_word_match(sentence):
     """
     single_prompt = """
     请仅识别出这段话中第一个为了规避审查而表述的名词变体词，并给出对应原词。你给出的反馈以以下形式给出：
-    (变体词，原词)
+    (变体词：具体变体词，原词：具体原词)
     如果这段话中没有变体词，你只需返回“无”。
     
     要识别的话如下:\n
@@ -202,7 +202,7 @@ def variant_word_match(sentence):
     answer = ""
     main(appid,api_key,api_secret,Spark_url,domain,question)
     print(answer)
-    pattern_variant = r'\((.*?)，(.*?)\)'
+    pattern_variant = r'\(变体词：(.*?)，原词：(.*?)\)'
     matches = re.findall(pattern_variant, answer)
     if len(matches) == 0:
         return None
