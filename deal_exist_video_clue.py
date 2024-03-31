@@ -12,7 +12,7 @@ from dao.dao import DAO
 dao = DAO()
 
 
-walk = os.walk("sensitive_video_part")
+walk = os.walk("/media/sf_share/sensitive_live_data")
 cnt = 0
 for path,dirs,files in walk:
     for file in files:
@@ -21,18 +21,6 @@ for path,dirs,files in walk:
             time_name = file[-23:-4]
             asr_file_path = path + '/' + origin_name + "_asr" + time_name + ".txt"
             ocr_file_path = path + '/' + origin_name + "_ocr" + time_name + ".txt"
-            # with open(asr_file_path, 'r',encoding='GBK') as f:
-            #     asr_txt = f.read()
-            # with open(ocr_file_path, 'r',encoding='GBK') as f:
-            #     ocr_txt = f.read()
-            # txt = asr_txt + ' ' + ocr_txt
-            # result = match.text_analysis(txt)
-            # print("result:",result)
-            # result_json = str(result)
-            # video_path = path + '/' + file
-            # dao.insert_证据视频(video_path,ocr_txt,asr_txt,result_json,time_name,"",origin_name)
-            # print("insert finish")
-            # cnt += 1
             try:
                 with open(asr_file_path, 'r',encoding='GBK') as f:
                     asr_txt = f.read()
