@@ -191,7 +191,7 @@ def variant_word_match(sentence):
     """
     single_prompt = """
     请仅识别出这段话中第一个为了规避审查而表述的名词变体词，并给出对应原词。你给出的反馈以以下形式给出：
-    变体词:词，原词:原词；
+    (变体词，原词)
     如果这段话中没有变体词，你只需返回“无”。
     
     要识别的话如下:\n
@@ -202,7 +202,7 @@ def variant_word_match(sentence):
     answer = ""
     main(appid,api_key,api_secret,Spark_url,domain,question)
     print(answer)
-    pattern_variant = r'变体词：(.*?)，原词：(.*?)[；。]'
+    pattern_variant = r'\((.*?)，(.*?)\)'
     matches = re.findall(pattern_variant, answer)
     if len(matches) == 0:
         return None
@@ -231,9 +231,9 @@ def split_chinese_string(input_string, max_length=100):
 
     return result
 
-if __name__ == '__main__':
-#     txt = """我家去了你车开不进来我操
-# 矿山突袭大金杯 暗区突围 突围·FAL上线 剩余时间 28:06 255 2 290 300 西北 330 23 msS 上场榜一：星 星雨晨风 108 禁止未成年消费 """
-    txt = "如果不是吃了我们的东西的话啊，他第二天就得去医院找白大褂了, 可见我们的产品具有显著的临某床意义, 对我们的心脑血某管都是很有好处的"
-    detected_variants = variant_word_match(txt)
-    print(detected_variants)
+# if __name__ == '__main__':
+# #     txt = """我家去了你车开不进来我操
+# # 矿山突袭大金杯 暗区突围 突围·FAL上线 剩余时间 28:06 255 2 290 300 西北 330 23 msS 上场榜一：星 星雨晨风 108 禁止未成年消费 """
+#     txt = "如果不是吃了我们的东西的话啊，他第二天就得去医院找白大褂了, 可见我们的产品具有显著的临某床意义, 对我们的心脑血某管都是很有好处的"
+#     detected_variants = variant_word_match(txt)
+#     print(detected_variants)

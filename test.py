@@ -40,24 +40,38 @@ def test_variant_match():
         cur_time = time.time()
 
         test_example = [
-            "我今天心清真不错我今天心清真不错我今天心清真不错我今天心清真不错",
-            "我今天心清真不错我今天心清真不错我今天心清真不错我今天心清真不错",
-            "我今天心清真不错我今天心清真不错我今天心清真不错我今天心清真不错",
-            "我今天心清真不错我今天心清真不错我今天心清真不错我今天心清真不错",
-            "我今天心清真不错我今天心清真不错我今天心清真不错我今天心清真不错",
-            "我今天心清真不错我今天心清真不错我今天心清真不错我今天心清真不错",
-            "我今天心清真不错我今天心清真不错我今天心清真不错我今天心清真不错",
-            "我今天心清真不错我今天心清真不错我今天心清真不错我今天心清真不错"
+            "这种药物的林床笑果非常好",
+            "咱们医院里的蚁生都在推荐啊",
+            "咱们的欣闹学管疾病等等都是可以治疗的啊"
         ]
         print("基于纠错模型的变体词匹配测试样例为：",test_example)
         cur_time = time.time()
-        print("基于正则表达式的变体词匹配测试，不要求变体词原词属于通用敏感词，测试结果为：")
+        print("基于纠错模型的变体词匹配测试样例测试结果为：")
         for i in test_example:
             result = corrector_match.kenlm_match(i)
             print(result)
         print("运行kenlm_match,跑完所有测试样例,消耗时间为:", time.time() - cur_time)
     # test_re_match()
+    def test_llm_match():
+        import time
+        cur_time = time.time()
+        from match.variant_match import llm_match
+        test_example = [
+            "这种药物的林床笑果非常好",
+            "咱们医院里的蚁生都在推荐啊",
+            "咱们的欣闹学管疾病等等都是可以治疗的啊",
+            "如果不是吃了我们的东西的话啊，他第二天就得去医院找白大褂了, 可见我们的产品具有显著的临某床意义, 对我们的心脑血某管都是很有好处的"
+        ]
+        print("基于大模型的变体词匹配测试样例为：",test_example)
+        cur_time = time.time()
+        print("基于大模型的变体词匹配测试结果为：")
+        for i in test_example:
+            result = llm_match.variant_word_match(i)
+            print(result)
+        print("调用大模型，跑完所有测试样例，消耗时间为：", time.time()-cur_time)
+    
     test_correct_match()
+    # test_llm_match()
 
 if __name__ == "__main__":
     # test_sensitive_word_match()
