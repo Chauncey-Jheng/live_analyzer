@@ -3,6 +3,7 @@ import sherpa_ncnn
 import wave
 import numpy as np
 import subprocess
+import os
 
 def create_recognizer():
     # Please replace the model files if needed.
@@ -84,6 +85,7 @@ def run_kaldi_asr(video_file_path:str, asr_file_path:str):
     Extract_video_audio(video_file_path, audio_file_path)
     try:
         wave_file_translation(audio_file_path, asr_file_path)
+        os.remove(audio_file_path)
     except:
         print("Something wrong in wave file translation...")
 
