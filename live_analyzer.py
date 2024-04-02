@@ -3,13 +3,12 @@ import time
 import os
 import shutil
 from match import match
+from category_recognize import category_recognize
 
 from asr.kaldi_asr import run_kaldi_asr
 from ocr.paddle_ocr import run_paddle_ocr
 
-from flask import jsonify
 from dao.dao import DAO
-dao = DAO()
 
 import configparser
 config_file = './config.ini'
@@ -17,6 +16,7 @@ encoding = 'utf-8-sig'
 config = configparser.RawConfigParser()
 config.read(config_file, encoding=encoding)
 is_keep_normal_live_video = config.get('视频分析配置','是否保留正常内容视频')
+is_open_category_recognize = config.get('视频分析配置','是否开启基于大模型的视频商品分类')
 save_dir = config.get('视频分析配置','线索视频保存地址')
 segment_time = int(config.get('录制设置','视频分段时间(秒)'))
 
@@ -69,16 +69,22 @@ def save_video(video_file_path:str, liveName:str, liveURL:str, result:str):
         shutil.move(ocr_file_path, save_ocr_path)
         print("Move save video to save dir")
         # 分析直播商品类别
-        good_kind = ""
+        good_kind = None
+        if is_open_category_recognize == "是":
+            good_kind = category_recognize.category_recognize(asr_result+'\n'+ocr_result)
+        else:
+            good_kind = None
         # 获取当前时间
         from datetime import datetime
         cur_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        dao = DAO()
         dao.insert_证据视频(save_video_path, ocr_result, asr_result, result, good_kind, cur_time, liveURL, liveName)
+        dao.close()
     except shutil.Error as e:
         print(f"Error: {e}")
 
 def analyze_video():
-    # 连接到数据库
+    # 连接到待分析直播视频池
     conn = sqlite3.connect('DouyinLiveRecorder/file_monitor.db')
     c = conn.cursor()
 

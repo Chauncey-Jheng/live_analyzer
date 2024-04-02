@@ -8,16 +8,10 @@
 # import ban_sale_match
 # import goods_conflict_match
 
-if __name__ == "__main__":
-    from sensitive_word_match import sensitive_word_match
-    from variant_match import hierarchical_match
-    from ban_sale_match import ban_sale_match
-    from goods_match import goods_conflict_match
-else:
-    from .sensitive_word_match import sensitive_word_match
-    from .variant_match import hierarchical_match
-    from .ban_sale_match import ban_sale_match
-    from .goods_match import goods_conflict_match
+from .sensitive_word_match import sensitive_word_match
+from .variant_match import hierarchical_match
+from .ban_sale_match import ban_sale_match
+from .goods_match import goods_conflict_match
 
 import configparser
 config_file = './match/config.ini'
@@ -53,17 +47,8 @@ def text_analysis(txt:str):
             return ban_sale_match_result
     
     if(is_open_goods_match == '是'):
-        goods_match_result = goods_conflict_match.match_goods_limit_time(txt)
+        goods_match_result = goods_conflict_match.match_goods_conflict_match(txt)
         if goods_match_result['type'] != 0:
             return goods_match_result
 
     return result
-
-if __name__ == "__main__":
-    # 测试文本
-    test_text = ["这个产品是最什么受欢迎的", "这对咱们的心脑小管疾病都是有治疗效果的啊","这个的效果在临某床上已经得到验证了"]
-    # 运行检测
-    for text in test_text:
-        print("原始文本：", text)
-        result = text_analysis(text)
-        print(result)

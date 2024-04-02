@@ -175,8 +175,8 @@ def checklen(text):
 
 import re
 def category_recognize(sentence):
-    global answer
     '''使用星火大模型对商品类别进行识别匹配'''
+    global answer
     prompt = """
     接下来将给出一段直播内容文本，请根据该直播内容文本，将其分类为化妆品、药品、保健品、医疗器械四类中的一类。如果不属于上述类别，判定为其他。你的回复不需要推理过程，只需要最终类别名称即可。
     

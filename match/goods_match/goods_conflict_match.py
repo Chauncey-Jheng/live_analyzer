@@ -149,6 +149,7 @@ for i in 进口医疗器械备案:
     good_turple = (good_name, good_content)  
     医疗器械_merged.append(good_turple)
 
+dao.close()
 
 import _thread as thread
 import base64
