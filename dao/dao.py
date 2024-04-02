@@ -54,10 +54,28 @@ class DAO:
         result = cursor.fetchall()
         cursor.close()
         return result
-    
+
+    def update_证据视频_线索内容_by_path(self, path:str, clue_content:str):
+        '''
+        按照证据视频的存放路径来更新证据视频的线索内容
+        '''
+        cursor = self.db.cursor()
+        cursor.execute("UPDATE 证据视频 SET 线索内容=? WHERE 视频文件地址=?", (clue_content, path))
+        self.db.commit()
+        cursor.close()
+
+    def update_证据视频_商品类别_by_path(self, path:str, good_kind:str):
+        '''
+        按照证据视频的存放路径来更新证据视频的线索内容
+        '''
+        cursor = self.db.cursor()
+        cursor.execute("UPDATE 证据视频 SET 商品类别=? WHERE 视频文件地址=?", (good_kind, path))
+        self.db.commit()
+        cursor.close()
+
     def get_证据视频_by_name(self, name:str):
         '''
-        按照名字从证据视频表中选择证据视频
+        按照证据视频地址从证据视频表中选择证据视频
         '''
         sql = '''
         select * from 证据视频
@@ -66,6 +84,20 @@ class DAO:
         cursor = self.db.cursor()
         cursor.execute(sql)
         result = cursor.fetchall()
+        cursor.close()
+        return result
+
+    def get_证据视频_商品类别_by_直播间名称(self, 直播间名称:str):
+        '''
+        按照直播间名称从证据视频表中选择证据视频对应的商品类别
+        '''
+        sql = '''
+        select 商品类别 from 证据视频
+        where 直播间名称 = "{直播间名称}";
+        '''.format(直播间名称=直播间名称)
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchone()
         cursor.close()
         return result
 

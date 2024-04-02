@@ -72,7 +72,7 @@ def save_video(video_file_path:str, liveName:str, liveURL:str, result:str):
         # 分析直播商品类别
         good_kind = None
         if is_open_category_recognize == "是":
-            good_kind = category_recognize.category_recognize(asr_result+'\n'+ocr_result)
+            good_kind = category_recognize.recognize_category(liveName, asr_result+'\n'+ocr_result)
         else:
             good_kind = None
         # 获取当前时间
