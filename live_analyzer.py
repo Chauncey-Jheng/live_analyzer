@@ -18,6 +18,7 @@ config.read(config_file, encoding=encoding)
 is_keep_normal_live_video = config.get('视频分析配置','是否保留正常内容视频')
 is_open_category_recognize = config.get('视频分析配置','是否开启基于大模型的视频商品分类')
 save_dir = config.get('视频分析配置','线索视频保存地址')
+clue_queue_len = int(config.get('视频分析设置','暂存线索队列最大长度'))
 segment_time = int(config.get('录制设置','视频分段时间(秒)'))
 
 import sqlite3
@@ -83,6 +84,9 @@ def save_video(video_file_path:str, liveName:str, liveURL:str, result:str):
     except shutil.Error as e:
         print(f"Error: {e}")
 
+# 线索暂存队列，该队列用处是用来防止保存一个直播中过多相同的线索视频
+clue_queue = []
+
 def analyze_video():
     # 连接到待分析直播视频池
     conn = sqlite3.connect('DouyinLiveRecorder/file_monitor.db')
@@ -106,7 +110,21 @@ def analyze_video():
             remove_video(filepath)
         # 否则，将该直播视频内容保存至线索库
         else:
-            save_video(filepath, liveName, liveURL, str(result))
+            # 如果当前队列数量未满，则直接将线索加入队列，并保存视频
+            if len(clue_queue) < clue_queue_len:
+                clue_queue.append(result)
+                save_video(filepath, liveName, liveURL, str(result))
+            # 若线索暂存队列已满
+            else:
+                # 如果当前线索与线索暂存队列中任一线索存在不同，则弹出队列首部线索，并将当前线索加入队列尾部
+                for clue in clue_queue:
+                    if clue != result:
+                        clue_queue.pop(0)
+                        clue_queue.append(result)
+                        save_video(filepath, liveName, liveURL, str(result))
+                        break
+                # 如果当前线索与线索暂存队列中任一线索均相同，那么则可以认为该线索重复了，不保存
+                remove_video(filepath)
 
         # 将文件状态标记为已分析
         c.execute("UPDATE files SET isAnalyzed=? WHERE filepath=?", (True, filepath))
