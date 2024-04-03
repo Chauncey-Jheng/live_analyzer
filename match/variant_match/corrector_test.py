@@ -8,5 +8,13 @@ def test_kenlm():
     m = Corrector()
     print(m.correct_batch(['我今天心清真不错','你找到你喜欢的工作，我也很开芯']))
 
+def test_T5():
+    from pycorrector import T5Corrector
+    m = T5Corrector()
+    print(m.correct_batch(['我今天心清真不错','你找到你喜欢的工作，我也很开芯']))
+    
+
 if __name__ == "__main__":
     test_kenlm()
+    test_T5()
+    # test_GptCorrector()

@@ -12,6 +12,7 @@ websocket_client
 
 # for correct_match in text_analysis
 pycorrector
+accelerate
 torch
 pandas
 transformers

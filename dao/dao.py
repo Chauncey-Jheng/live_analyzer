@@ -171,9 +171,34 @@ class DAO:
         向数据库中插入变体词
         '''
         sql = '''
+        select * from 专项变体词
+        WHERE 变体词='{变体词}'and 原词='{原词}';
+        '''.format(变体词=变体词, 原词=原词)
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        if result != None:
+            return
+        sql = '''
         INSERT INTO 专项变体词 (变体词, 原词)
         VALUES ('{变体词}','{原词}');
         '''.format(变体词=变体词, 原词=原词)
+        cursor.execute(sql)
+        self.db.commit()
+        cursor.close()
+
+    def delete_专项变体词_重复记录(self):
+        '''
+        删除专项变体词中重复的记录
+        '''
+        sql = '''
+        DELETE FROM 专项变体词
+        WHERE ROWID NOT IN (
+            SELECT MIN(ROWID)
+            FROM 专项变体词
+            GROUP BY 变体词, 原词
+        )    
+        '''
         cursor = self.db.cursor()
         cursor.execute(sql)
         self.db.commit()

@@ -48,7 +48,7 @@ def test_variant_match():
         cur_time = time.time()
         print("基于纠错模型的变体词匹配测试样例测试结果为：")
         for i in test_example:
-            result = corrector_match.kenlm_match(i)
+            result = corrector_match.match(i)
             print(result)
         print("运行kenlm_match,跑完所有测试样例,消耗时间为:", time.time() - cur_time)
     # test_re_match()

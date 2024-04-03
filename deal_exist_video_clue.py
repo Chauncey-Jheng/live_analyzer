@@ -10,6 +10,7 @@ from category_recognize import category_recognize_by_llm
 
 from dao.dao import DAO
 from tqdm import tqdm
+import random
 dao = DAO()
 
 
@@ -59,6 +60,57 @@ def findout_current_live_kind():
     count = Counter(live_kinds)
     print(count)
 
+def add_variant_clue():
+    """
+    不要求变体词原词属于通用敏感词,从标记正常的样本中识别可能存在的变体词
+    """
+    fields = dao.get_字段名("证据视频")
+    # print(fields)
+    clues = dao.get_证据视频()
+    # print(clues)
+    for clue in tqdm(clues):
+        content = eval(clue[fields.index("线索内容")])
+        if content["type"] == 0:
+            if(random.random() < 0.45):
+                text = clue[fields.index("视频ocr结果")] + clue[fields.index("视频asr结果")]
+                result = match.text_analysis(text)
+                clue = list(clue)
+                clue[fields.index("线索内容")] = str(result)
+                dao.insert_证据视频(clue[fields.index("视频文件地址")],
+                                clue[fields.index("视频ocr结果")],
+                                clue[fields.index("视频asr结果")],
+                                clue[fields.index("线索内容")],
+                                clue[fields.index("商品类别")],
+                                clue[fields.index("获取时间")],
+                                clue[fields.index("直播间链接")],
+                                clue[fields.index("直播间名称")])
+
+def add_variant_clue_from_T5():
+    """
+    对已用kenlm识别出的变体词，再次使用T5模型进行识别
+    """
+    fields = dao.get_字段名("证据视频")
+    # print(fields)
+    clues = dao.get_证据视频()
+    # print(clues)
+    for clue in tqdm(clues):
+        content = eval(clue[fields.index("线索内容")])
+        if content["type"] == 2:
+            if(random.random() < 0.23):
+                text = clue[fields.index("视频ocr结果")] + clue[fields.index("视频asr结果")]
+                result = match.text_analysis(text)
+                clue = list(clue)
+                clue[fields.index("线索内容")] = str(result)
+                dao.insert_证据视频(clue[fields.index("视频文件地址")],
+                                clue[fields.index("视频ocr结果")],
+                                clue[fields.index("视频asr结果")],
+                                clue[fields.index("线索内容")],
+                                clue[fields.index("商品类别")],
+                                clue[fields.index("获取时间")],
+                                clue[fields.index("直播间链接")],
+                                clue[fields.index("直播间名称")])
+
+
 def deal_exist_video_clue_v2():
     fields = dao.get_字段名("证据视频")
     # print(fields)
@@ -91,5 +143,7 @@ def deal_exist_video_clue_v2():
 
 if __name__ == "__main__":
     # findout_current_live_name()
-    deal_exist_video_clue_v2()
+    # deal_exist_video_clue_v2()
     # findout_current_live_kind()
+    # add_variant_clue()
+    add_variant_clue_from_T5()

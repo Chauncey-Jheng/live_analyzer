@@ -38,7 +38,7 @@ def monitor_folder(folder):
                             if liveName in line:
                                 liveURL = line.split(',')[0]
                                 break
-                    c.execute("INSERT INTO files (filepath, liveName, liveURL, timestamp, isAnalyzed) VALUES (?, ?, ?, ?)", 
+                    c.execute("INSERT INTO files (filepath, liveName, liveURL, timestamp, isAnalyzed) VALUES (?, ?, ?, ?, ?)", 
                               (file_path, liveName, liveURL, time.time(), False))
                     conn.commit()
                     print(f"New file detected: {file_path}")

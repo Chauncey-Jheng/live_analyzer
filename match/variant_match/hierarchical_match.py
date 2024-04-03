@@ -37,7 +37,7 @@ def hierarchical_analysis(text:str):
             return result
     
     if(is_open_corrector_match == '是'):
-        corrector_match_result = corrector_match.kenlm_match(text)
+        corrector_match_result = corrector_match.match(text)
         if corrector_match_result != None:
             变体词 = corrector_match_result["变体词"]
             原词 = corrector_match_result["原词"]
