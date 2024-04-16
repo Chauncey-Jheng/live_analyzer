@@ -174,7 +174,7 @@ def checklen(text):
     return text
 
 import re
-def variant_word_match(sentence):
+def variant_word_match_with_spark(sentence):
     '''使用星火大模型对变体词进行识别匹配'''
     global answer
 
@@ -229,6 +229,50 @@ def split_chinese_string(input_string, max_length=100):
     if current_chunk:
         result.append(current_chunk)
 
+    return result
+
+llama_base_url = os.getenv('LLAMA_BASE_URL')     #填写控制台中获取的base_url 信息
+llama_api_key = os.getenv('LLAMA_API_KEY')    #填写控制台中获取的 APIKey 信息
+
+from openai import OpenAI
+client = OpenAI(
+    base_url = llama_base_url, # "http://<Your api-server IP>:port"
+    api_key = llama_api_key
+)
+
+def variant_word_match_with_llama(sentence):
+
+    # prompt = """
+    # 接下来将给出一段直播内容文本以及对应的商品内容描述，请对两者进行矛盾性检测。如果检测发现没有矛盾，不用解释，仅需回复None
+    
+    # 要识别的内容文本如下:\n
+    # """
+    prompt = "要识别的话如下:\n"
+    system_prompt = """
+    请仅识别出这段话中第一个为了规避审查而表述的名词变体词，并给出对应原词。你给出的反馈以以下形式给出：
+    (变体词：具体变体词，原词：具体原词)
+    如果这段话中没有变体词，你只需返回“无”。
+    """
+    # system_prompt = "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests."
+    input = prompt + sentence
+    completion = client.chat.completions.create(
+        model="LLaMA_CPP",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": input}
+        ]
+    )
+    # print(completion.choices[0].message)
+    answer = completion.choices[0].message.content.strip()
+
+    pattern_variant = r'\(变体词：(.*?)，原词：(.*?)\)'
+    matches = re.findall(pattern_variant, answer)
+    if len(matches) == 0:
+        return None
+    match_case = matches[0]
+    variant_word = match_case[0]
+    origin_word = match_case[1]
+    result = {"变体词":variant_word,"原词":origin_word}
     return result
 
 # if __name__ == '__main__':

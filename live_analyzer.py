@@ -9,6 +9,7 @@ from asr.kaldi_asr import run_kaldi_asr
 from ocr.paddle_ocr import run_paddle_ocr
 
 from dao.dao import DAO
+dao = DAO()
 
 import configparser
 config_file = './config.ini'
@@ -88,6 +89,9 @@ def save_video(video_file_path:str, liveName:str, liveURL:str, result:str):
 clue_queue = []
 
 def analyze_video():
+    '''
+    逐个分析直播视频，生成证据视频线索
+    '''
     # 连接到待分析直播视频池
     conn = sqlite3.connect('DouyinLiveRecorder/file_monitor.db')
     c = conn.cursor()
@@ -132,6 +136,94 @@ def analyze_video():
 
     # 关闭数据库连接
     conn.close()
+
+
+def analyze_video_with_accumulate_for_variant():
+    '''
+    累积式分析视频，用于分析获取变体词
+    '''
+    from match.variant_match import llm_match
+    from match.variant_match import re_match
+    from match.variant_match import corrector_match
+
+    llm_match_accumulate_time = 300 # 单位：秒
+    corrector_match_accumulate_time = 120
+    re_match_accumulate_time = 60
+
+    llm_match_cnt_max = llm_match_accumulate_time // segment_time
+    corrector_match_cnt_max = corrector_match_accumulate_time // segment_time
+    re_match_cnt_max = re_match_accumulate_time // segment_time
+
+    llm_match_cnt = 0
+    corrector_match_cnt = 0
+    re_match_cnt = 0
+
+    accumulate_live_txt_for_llm = ''
+    accumulate_live_txt_for_corrector = ''
+    accumulate_live_txt_for_re = ''
+
+    # 连接到待分析直播视频池
+    conn = sqlite3.connect('DouyinLiveRecorder/file_monitor.db')
+    c = conn.cursor()
+
+    # 从数据库中选择未分析的文件
+    c.execute("SELECT * FROM files WHERE isAnalyzed=?", (False,))
+    files_to_analyze = c.fetchall()
+
+    # 分析文件
+    for file_data in files_to_analyze:
+        filepath, liveName, liveURL, timestamp, _ = file_data
+        # 在这里执行文件分析的操作
+        print(f"Analyzing file: {filepath}")
+        asr_txt, ocr_txt = video_to_txt(filepath)
+        live_txt = asr_txt + "\n" + ocr_txt
+        accumulate_live_txt_for_llm += live_txt
+        accumulate_live_txt_for_corrector += live_txt
+        accumulate_live_txt_for_re += live_txt
+        re_match_cnt += 1
+        corrector_match_cnt += 1
+        llm_match_cnt += 1
+
+        if re_match_cnt >= re_match_cnt_max:
+            result = re_match.detect_complex_variant_words(accumulate_live_txt_for_re)
+            print(result)
+            if result != None:
+                变体词 = result["变体词"]
+                原词 = result["原词"]
+                发现方式 = '正则表达式'
+                dao.insert_专项变体词(变体词,原词,发现方式)
+                re_match_cnt = 0
+                accumulate_live_txt_for_re = ''
+
+        if corrector_match_cnt >= corrector_match_cnt_max:
+            result = corrector_match.match(accumulate_live_txt_for_corrector)
+            print(result)
+            if result != None:
+                变体词 = result["变体词"]
+                原词 = result["原词"]
+                发现方式 = '统计语言模型'
+                dao.insert_专项变体词(变体词,原词,发现方式)
+                corrector_match_cnt = 0
+                accumulate_live_txt_for_corrector = ''
+
+        if llm_match_cnt >= llm_match_cnt_max:
+            result = llm_match.variant_word_match_with_llama(accumulate_live_txt_for_llm)
+            print(result)
+            if result != None:
+                变体词 = result["变体词"]
+                原词 = result["原词"]
+                发现方式 = '大模型'
+                dao.insert_专项变体词(变体词,原词,发现方式)
+                llm_match_cnt = 0
+                accumulate_live_txt_for_llm = ''
+
+
+        # 将文件状态标记为已分析
+        c.execute("UPDATE files SET isAnalyzed=? WHERE filepath=?", (True, filepath))
+        conn.commit()
+
+    # 关闭数据库连接
+    conn.close()    
 
 if __name__ == "__main__":
     time.sleep(30)

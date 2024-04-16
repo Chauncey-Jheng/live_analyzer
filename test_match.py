@@ -66,11 +66,11 @@ def test_variant_match():
         cur_time = time.time()
         print("基于大模型的变体词匹配测试结果为：")
         for i in test_example:
-            result = llm_match.variant_word_match(i)
+            result = llm_match.variant_word_match_with_spark(i)
             print(result)
         print("调用大模型，跑完所有测试样例，消耗时间为：", time.time()-cur_time)
     
-    test_correct_match()
+    # test_correct_match()
     test_llm_match()
 
 def test_ban_sale_match():
@@ -89,10 +89,10 @@ def test_ban_sale_match():
 
 def test_goods_match():
     from match.goods_match import goods_conflict_match
-    print(goods_conflict_match.药品_merged)
-    print(goods_conflict_match.保健品_merged)
-    print(goods_conflict_match.化妆品_merged)
-    print(goods_conflict_match.医疗器械_merged)
+    # print(goods_conflict_match.药品_merged)
+    # print(goods_conflict_match.保健品_merged)
+    # print(goods_conflict_match.化妆品_merged)
+    # print(goods_conflict_match.医疗器械_merged)
 
     test_example = [
         "感冒清片纯中草药制作阿，不含有任何化学成分",

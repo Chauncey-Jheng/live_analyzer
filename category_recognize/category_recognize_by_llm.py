@@ -138,9 +138,9 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 #以下密钥信息从控制台获取
-appid = os.getenv('APPID')     #填写控制台中获取的 APPID 信息
-api_secret = os.getenv('API_SECRET')   #填写控制台中获取的 APISecret 信息
-api_key = os.getenv('API_KEY')    #填写控制台中获取的 APIKey 信息
+appid = os.getenv('SPARK_APPID')     #填写控制台中获取的 APPID 信息
+api_secret = os.getenv('SPARK_API_SECRET')   #填写控制台中获取的 APISecret 信息
+api_key = os.getenv('SPARK_API_KEY')    #填写控制台中获取的 APIKey 信息
 
 #用于配置大模型版本，默认“general/generalv2”
 # domain = "general"   # v1.5版本
@@ -174,7 +174,7 @@ def checklen(text):
     return text
 
 import re
-def category_recognize(sentence):
+def category_recognize_with_spark(sentence):
     '''使用星火大模型对商品类别进行识别匹配'''
     global answer
     prompt = """
@@ -183,11 +183,11 @@ def category_recognize(sentence):
     要识别的内容文本如下:\n
     """
     input = prompt + sentence
-    text.clear
+    text.clear()
     question = checklen(getText("user",input))
     answer = ""
     main(appid,api_key,api_secret,Spark_url,domain,question)
-    print(answer)
+    # print(answer)
     if answer not in ('化妆品','药品','保健品','医疗器械'):
         return None
     return answer
@@ -211,9 +211,44 @@ def split_chinese_string(input_string, max_length=100):
 
     return result
 
+
+llama_base_url = os.getenv('LLAMA_BASE_URL')     #填写控制台中获取的base_url 信息
+llama_api_key = os.getenv('LLAMA_API_KEY')    #填写控制台中获取的 APIKey 信息
+
+from openai import OpenAI
+client = OpenAI(
+    base_url = llama_base_url, # "http://<Your api-server IP>:port"
+    api_key = llama_api_key
+)
+
+def category_recognize_with_llama(sentence:str):
+
+    # prompt = """
+    # 接下来将给出一段直播内容文本，请根据该直播内容文本，将其分类为 化妆品、药品、保健品、医疗器械 四类中的一类。如果不属于上述类别，判定为其他。你的回复不需要推理过程，只需要最终类别名称即可。
+    
+    # 要识别的内容文本如下:\n
+    # """
+    prompt = ""
+    # system_prompt = "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests."
+    system_prompt = "你是一个产品类别分类器。将给出一段直播内容文本，请根据该直播内容文本，将其分类为 化妆品、药品、保健品、医疗器械 四类中的一类。如果不属于上述类别，判定为其他。你的回复不需要推理过程，只需要最终类别名称即可。"
+    input = prompt + sentence
+    completion = client.chat.completions.create(
+        model="LLaMA_CPP",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": input}
+        ]
+    )
+    # print(completion.choices[0].message)
+    result = completion.choices[0].message.content.strip()
+
+    if result not in ('化妆品','药品','保健品','医疗器械'):
+        return None
+    return result
+
 if __name__ == '__main__':
-    txt = """我家去了你车开不进来我操
+    # txt = """我家去了你车开不进来我操
 # 矿山突袭大金杯 暗区突围 突围·FAL上线 剩余时间 28:06 255 2 290 300 西北 330 23 msS 上场榜一：星 星雨晨风 108 禁止未成年消费 """
-    # txt = "音量更加大清晰度更加高坐到一号链接没没有的功能三三色背光屏也是只有二号链接具备倒到通过三个颜色变板就能够轻松去分高低数二值红绿灯底怎么看咱们高低上就怎么看数字根本不用"
-    detected_variants = category_recognize(txt)
+    txt = "音量更加大清晰度更加高坐到一号链接没没有的功能三三色背光屏也是只有二号链接具备倒到通过三个颜色变板就能够轻松去分高低数二值红绿灯底怎么看咱们高低上就怎么看数字根本不用"
+    detected_variants = category_recognize_with_llama(txt)
     print(detected_variants)

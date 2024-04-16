@@ -3,7 +3,10 @@ from dao.dao import DAO
 dao = DAO()
 
 def recognize_category_by_history(live_name:str):
-    kind = dao.get_证据视频_商品类别_by_直播间名称(live_name)[0]
+    result = dao.get_证据视频_商品类别_by_直播间名称(live_name)
+    if result == None:
+        return None
+    kind = result[0]
     return kind
     
 

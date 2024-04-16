@@ -15,10 +15,14 @@ def recognize_category(live_name:str, content:str):
     config.read(config_file, encoding=encoding)
     is_open_cat_recognize_by_history = config.get('商品类别识别设置','是否开启根据历史记录中直播间名称判定类别')
     is_open_cat_recognize_by_llm = config.get('商品类别识别设置','是否开启根据大模型判定商品类别')
+    llm_name = config.get('商品类别识别设置','使用大模型为')
 
     kind = None
     if is_open_cat_recognize_by_history == "是":
         kind = category_recognize_by_history.recognize_category_by_history(live_name)
     if is_open_cat_recognize_by_llm == "是" and kind == None:
-        kind = category_recognize_by_llm.category_recognize(content)
+        if llm_name == "spark":
+            kind = category_recognize_by_llm.category_recognize_with_spark(content)
+        elif llm_name == "llama":
+            kind = category_recognize_by_llm.category_recognize_with_llama(content)
     return kind

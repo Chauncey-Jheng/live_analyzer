@@ -166,13 +166,13 @@ class DAO:
         cursor.close()
         return result
 
-    def insert_专项变体词(self, 变体词:str, 原词:str):
+    def insert_专项变体词(self, 变体词:str, 原词:str, 发现方式:str):
         '''
         向数据库中插入变体词
         '''
         sql = '''
         select * from 专项变体词
-        WHERE 变体词='{变体词}'and 原词='{原词}';
+        WHERE 变体词='{变体词}' and 原词='{原词}';
         '''.format(变体词=变体词, 原词=原词)
         cursor = self.db.cursor()
         cursor.execute(sql)
@@ -180,9 +180,9 @@ class DAO:
         if result != None:
             return
         sql = '''
-        INSERT INTO 专项变体词 (变体词, 原词)
-        VALUES ('{变体词}','{原词}');
-        '''.format(变体词=变体词, 原词=原词)
+        INSERT INTO 专项变体词 (变体词, 原词, 发现方式)
+        VALUES ('{变体词}','{原词}','{发现方式}');
+        '''.format(变体词=变体词, 原词=原词, 发现方式=发现方式)
         cursor.execute(sql)
         self.db.commit()
         cursor.close()

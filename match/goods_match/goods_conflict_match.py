@@ -327,9 +327,9 @@ def checklen(text):
     return text
 
 import re
-def conflict_match(sentence,goods_content):
-    global answer
+def conflict_match_with_spark(sentence,goods_content):
     '''使用星火大模型对直播内容文本以及对应的商品内容描述进行矛盾性检测'''
+    global answer
     prompt = """
     接下来将给出一段直播内容文本以及对应的商品内容描述，请对两者进行矛盾性检测。如果检测发现没有矛盾，不用解释，仅需回复None
     
@@ -344,6 +344,7 @@ def conflict_match(sentence,goods_content):
     if "None" in answer:
         return None
     return answer
+
 
 def split_chinese_string(input_string, max_length=100):
     result = []
@@ -365,12 +366,58 @@ def split_chinese_string(input_string, max_length=100):
     return result
 
 
+llama_base_url = os.getenv('LLAMA_BASE_URL')     #填写控制台中获取的base_url 信息
+llama_api_key = os.getenv('LLAMA_API_KEY')    #填写控制台中获取的 APIKey 信息
+
+from openai import OpenAI
+client = OpenAI(
+    base_url = llama_base_url, # "http://<Your api-server IP>:port"
+    api_key = llama_api_key
+)
+
+def conflict_match_with_llama(sentence,goods_content):
+
+    # prompt = """
+    # 接下来将给出一段直播内容文本以及对应的商品内容描述，请对两者进行矛盾性检测。如果检测发现没有矛盾，不用解释，仅需回复None
+    
+    # 要识别的内容文本如下:\n
+    # """
+    prompt = ""
+    # system_prompt = "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests."
+    system_prompt = "你是一个文本内容矛盾检测器。接下来将给出一段直播内容文本以及对应的商品内容描述，请对两者进行矛盾性检测。如果检测发现没有矛盾，不用解释，仅需回复None。直播内容文本如下:\n"
+    input = prompt + sentence + "商品内容描述如下:\n" + goods_content
+    completion = client.chat.completions.create(
+        model="LLaMA_CPP",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": input}
+        ]
+    )
+    # print(completion.choices[0].message)
+    result = completion.choices[0].message.content.strip()
+
+    if "None" in result:
+        return None
+    return result
+
+
 def match_goods_conflict_match(str):
     '''检测直播文本内容中是否出现在数据库中的商品，如果出现，则对其进行矛盾性检测'''
+    import configparser
+    config_file = './match/config.ini'
+    encoding = 'utf-8-sig'
+    config = configparser.RawConfigParser()
+    config.read(config_file, encoding=encoding)
+    llm_name = config.get('商品内容匹配设置','大语言模型采用')
+    if llm_name == "llama":
+        conflict_match = conflict_match_with_llama
+    elif llm_name == "spark":
+        conflict_match = conflict_match_with_spark
 
     result = {}
     result["type"] = 0
     result['content'] = None
+
     for i in 保健品_merged:
         if i[0] in str:
             ret = conflict_match(str,i[1])
