@@ -1,13 +1,31 @@
-# import pymysql
+import pymysql
 import sqlite3
 
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+import configparser
+config_file = './config.ini'
+encoding = 'utf-8-sig'
+config = configparser.RawConfigParser()
+config.read(config_file, encoding=encoding)
+using_database = config.get('数据库设置','使用数据库')
+
+
 class DAO:
-    def __init__(self,host="localhost",user="root",password="Zcx010712",database="live_analyzer") -> None:
+    def __init__(self) -> None:
         '''
         初始化数据库
         '''
-        # self.db = pymysql.connect(host=host,user=user,password=password,database=database)
-        self.db = sqlite3.connect("live_analyzer_database.db")
+        if using_database == "mysql":
+            host=os.getenv('MYSQL_HOST')
+            user=os.getenv('MYSQL_USER')
+            password=os.getenv('MYSQL_PASSWORD')
+            database=os.getenv('MYSQL_DATABASE')
+            self.db = pymysql.connect(host=host,user=user,password=password,database=database)
+        else:
+            self.db = sqlite3.connect("live_analyzer_database.db")
     
     def close(self):
         '''
@@ -105,6 +123,8 @@ class DAO:
         '''
         向数据库中插入证据视频
         '''
+        ocr_txt = ocr_txt.replace("'", "").replace('"', '')
+        asr_txt = asr_txt.replace("'", "").replace('"', '')
         sql = '''
         INSERT INTO 证据视频 (视频文件地址, 视频ocr结果, 视频asr结果, 是否违规, 线索内容, 商品类别, 获取时间, 直播间链接, 直播间名称)
         VALUES ("{video_addr}","{ocr_txt}","{asr_txt}","否","{content}","{good_category}", "{time}","{live_url}","{live_name}");

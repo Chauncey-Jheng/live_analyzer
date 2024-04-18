@@ -2,4 +2,5 @@
 asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30
 sensitive_video_part/
 **/__pycache__/
+__pycache__
 asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30.zip
