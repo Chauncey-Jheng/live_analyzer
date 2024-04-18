@@ -9,6 +9,7 @@ sherpa_ncnn
 
 # for llm_match in text_analysis
 websocket_client
+openai
 
 # for correct_match in text_analysis
 pycorrector
@@ -21,6 +22,8 @@ chardet
 # for crawler
 requests
 PyExecJS
+loguru==0.7.2
+pycryptodome==3.20.0
 
 # for flask
 flask==2.2.5
