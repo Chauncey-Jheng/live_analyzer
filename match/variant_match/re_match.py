@@ -5,6 +5,7 @@ import itertools
 from dao.dao import DAO
 dao = DAO()
 sensitive_words = [i[0] for i in dao.get_通用敏感词()]
+variant_words = dao.get_专项变体词()
 
 # 变体词正则表达式
 # variant_patterns = [
@@ -21,10 +22,26 @@ sensitive_words = [i[0] for i in dao.get_通用敏感词()]
 variant_class = ['某', '什么', '小']
 
 variant_patterns = [f'([\u4e00-\u9fa5]+){i}([\u4e00-\u9fa5]+)' for i in variant_class]
+variant_pattern_for_ABAC_AABB = r'(((.).\3.)|((.)\5(.)\6))'
+
+def detect_variant_words_in_database(text):
+    for i in variant_words:
+        origin_word = i[1]
+        variant_word = i[0]
+        if variant_word in text or origin_word in text:
+            result = {"变体词":variant_word, "原词":origin_word}
+            return result
+    return None
 
 def detect_complex_variant_words_in_sensitive(text):
     ''' 检测并处理变体词(要求对应的原词在敏感词库中)'''
     # print("原始输入为：", text)
+    matches = list(i[0] for i in re.findall(variant_pattern_for_ABAC_AABB, text))
+    for match in matches:
+        origin_word = match[1] + match[3]
+        variant_word = match
+        result = {"变体词":variant_word, "原词":origin_word}
+        return result
     detected_variants = []
     for ind, pattern in enumerate(variant_patterns):
         matches = re.finditer(pattern, text)
@@ -54,6 +71,12 @@ def detect_complex_variant_words_in_sensitive(text):
 def detect_complex_variant_words(text):
     '''监测并处理变体词'''
     # print("原始输入为：", text)
+    matches = list(i[0] for i in re.findall(variant_pattern_for_ABAC_AABB, text))
+    for match in matches:
+        origin_word = match[1] + match[3]
+        variant_word = match
+        result = {"变体词":variant_word, "原词":origin_word}
+        return result
     detected_variants = []
     for ind, pattern in enumerate(variant_patterns):
         matches = re.finditer(pattern, text)

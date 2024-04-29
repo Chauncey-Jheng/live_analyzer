@@ -18,7 +18,8 @@ def test_variant_match():
         test_example = [
             "临某床",
             "鱼什么油",
-            "最什么便宜的"
+            "最什么便宜的",
+            "白某障"
         ]
         print("基于正则表达式的变体词匹配测试样例为：",test_example)
 
@@ -66,12 +67,13 @@ def test_variant_match():
         cur_time = time.time()
         print("基于大模型的变体词匹配测试结果为：")
         for i in test_example:
-            result = llm_match.variant_word_match_with_spark(i)
+            result = llm_match.variant_word_match_with_llama(i)
             print(result)
         print("调用大模型，跑完所有测试样例，消耗时间为：", time.time()-cur_time)
     
+    test_re_match()
     # test_correct_match()
-    test_llm_match()
+    # test_llm_match()
 
 def test_ban_sale_match():
     from match.ban_sale_match import ban_sale_match

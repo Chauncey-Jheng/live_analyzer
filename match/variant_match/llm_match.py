@@ -255,20 +255,21 @@ def variant_word_match_with_llama(sentence):
     """
     # system_prompt = "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests."
     input = prompt + sentence
+    split_chs_str = split_chinese_string(input_string=input)
     completion = client.chat.completions.create(
         model="LLaMA_CPP",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": input}
+            {"role": "user", "content": split_chs_str[0]}
         ]
     )
     # print(completion.choices[0].message)
     answer = completion.choices[0].message.content.strip()
-
+    # print(answer)
     pattern_variant = r'\(变体词：(.*?)，原词：(.*?)\)'
     matches = re.findall(pattern_variant, answer)
     if len(matches) == 0:
-        return None
+        return None 
     match_case = matches[0]
     variant_word = match_case[0]
     origin_word = match_case[1]

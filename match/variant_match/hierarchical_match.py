@@ -26,6 +26,12 @@ def hierarchical_analysis(text:str):
     result["content"] = None
     
     if(is_open_re_match == '是'):
+        re_match_result = re_match.detect_variant_words_in_database(text)
+        if re_match_result != None:
+            发现方式 = '正则表达式'
+            result["type"] = 2 # 存在变体词
+            result["content"] = {"匹配对":re_match_result,"匹配方式":发现方式}
+            return result
         re_match_result = re_match.detect_complex_variant_words(text)
         if re_match_result != None:
             变体词 = re_match_result["变体词"]
@@ -37,7 +43,7 @@ def hierarchical_analysis(text:str):
             result["type"] = 2 # 存在变体词
             result["content"] = {"匹配对":re_match_result,"匹配方式":发现方式}
             return result
-    
+        
     if(is_open_corrector_match == '是'):
         corrector_match_result = corrector_match.match(text)
         if corrector_match_result != None:

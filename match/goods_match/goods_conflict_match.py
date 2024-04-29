@@ -74,6 +74,8 @@ for i in 国产药品:
     药品_merged.append(good_turple)
 for i in 进口药品:
     good_name = i[进口药品字段名.index("商品名（中文）")]
+    if good_name == "":
+        continue
     good_content = ''
     for j in 进口药品字段名:
         if j == "产品类别":
@@ -386,11 +388,12 @@ def conflict_match_with_llama(sentence,goods_content):
     # system_prompt = "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests."
     system_prompt = "你是一个文本内容矛盾检测器。接下来将给出一段直播内容文本以及对应的商品内容描述，请对两者进行矛盾性检测。如果检测发现没有矛盾，不用解释，仅需回复None。直播内容文本如下:\n"
     input = prompt + sentence + "商品内容描述如下:\n" + goods_content
+    split_chs_str = split_chinese_string(input_string=input)
     completion = client.chat.completions.create(
         model="LLaMA_CPP",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": input}
+            {"role": "user", "content": split_chs_str[0]}
         ]
     )
     # print(completion.choices[0].message)
@@ -423,7 +426,7 @@ def match_goods_conflict_match(str):
             ret = conflict_match(str,i[1])
             if ret != None:
                 result["type"] = 4
-                result["content"] = ret 
+                result["content"] = {"商品名称":i[0],"商品类别":"保健品","矛盾":ret} 
                 return result
             else:
                 break
@@ -433,7 +436,7 @@ def match_goods_conflict_match(str):
             ret = conflict_match(str,i[1])
             if ret != None:
                 result["type"] = 4
-                result["content"] = ret 
+                result["content"] = {"商品名称":i[0],"商品类别":"化妆品","矛盾":ret} 
                 return result
             else:
                 break
@@ -443,7 +446,7 @@ def match_goods_conflict_match(str):
             ret = conflict_match(str,i[1])
             if ret != None:
                 result["type"] = 4
-                result["content"] = ret 
+                result["content"] = {"商品名称":i[0],"商品类别":"药品","矛盾":ret} 
                 return result
             else:
                 break
@@ -453,7 +456,7 @@ def match_goods_conflict_match(str):
             ret = conflict_match(str,i[1])
             if ret != None:
                 result["type"] = 4
-                result["content"] = ret 
+                result["content"] = {"商品名称":i[0],"商品类别":"医疗器械","矛盾":ret} 
                 return result    
             else:
                 break      

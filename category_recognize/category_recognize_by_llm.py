@@ -230,22 +230,35 @@ def category_recognize_with_llama(sentence:str):
     # """
     prompt = ""
     # system_prompt = "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests."
-    system_prompt = "你是一个产品类别分类器。将给出一段直播内容文本，请根据该直播内容文本，将其分类为 化妆品、药品、保健品、医疗器械 四类中的一类。如果不属于上述类别，判定为其他。你的回复不需要推理过程，只需要最终类别名称即可。"
+    # system_prompt = "You are a live streaming product category classifier. A live OCR recognition Chinese text will be provided. Based on this text, please classify the product into one of the four categories: Cosmetic, pharmaceutical, health product, and medical device. If it does not belong to the above category, it is judged as other. Your reply does not require a reasoning process, only the final category name is required. “"
+    system_prompt = "你是一个直播产品类别分类器。将给出一段直播ocr识别文本，请根据该文本，将产品分类为 化妆品、药品、保健品、 医疗器械 等四类中的一类。如果不属于上述类别，判定为其他。你的回复只能是“化妆品、药品、保健品、 医疗器械、其他” 中的一个词，不用包括任何解释。"
     input = prompt + sentence
+    split_chs_str = split_chinese_string(input_string=input, max_length=30)
+    # print(split_chs_str[0])
     completion = client.chat.completions.create(
         model="LLaMA_CPP",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": input}
+            {"role": "user", "content": split_chs_str[0]}
         ]
     )
     # print(completion.choices[0].message)
     result = completion.choices[0].message.content.strip()
+    print(result)
 
-    if result not in ('化妆品','药品','保健品','医疗器械'):
+    if result not in ('Cosmetic','pharmaceutical','health product','medical device',"化妆品","药品","保健品","医疗器械"):
         return None
-    return result
-
+    elif  result == 'Cosmetic':
+        return "化妆品"
+    elif result == 'health product':
+        return "保健品"
+    elif result == 'pharmaceutical':
+        return "药品"
+    elif result == "medical device":
+        return "医疗器械"
+    else:
+        return result
+    
 if __name__ == '__main__':
     # txt = """我家去了你车开不进来我操
 # 矿山突袭大金杯 暗区突围 突围·FAL上线 剩余时间 28:06 255 2 290 300 西北 330 23 msS 上场榜一：星 星雨晨风 108 禁止未成年消费 """

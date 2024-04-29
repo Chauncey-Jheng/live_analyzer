@@ -28,4 +28,8 @@ def cap_video(src):
         cv2.imshow('Image', frame)
         cv2.waitKey(20)
 
-cap_video('test_files/new.mp4')
+
+# cap_video('test_files/new.mp4')
+
+frame = cv2.imread('test_files/ct_report.png')
+cv2.imshow('Image',frame)

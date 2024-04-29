@@ -3,6 +3,7 @@ openvino
 paddlepaddle
 pyclipper
 shapely
+opencv-python 
 
 # for asr module
 sherpa_ncnn
@@ -13,6 +14,7 @@ openai
 
 # for correct_match in text_analysis
 pycorrector
+kenlm
 accelerate
 torch
 pandas
