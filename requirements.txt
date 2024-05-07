@@ -46,3 +46,5 @@ flask-socketio
 
 # for mysql
 pymysql
+sqlite3-to-mysql
+mysql-to-sqlite3

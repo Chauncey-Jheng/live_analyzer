@@ -204,12 +204,11 @@ def post_processing_detection(frame, det_results):
 def run_paddle_ocr(source, ocr_file_path):
     """
     Main function to run the paddleOCR inference:
-    1. Create a video player to play with target fps (ocr_utils.VideoPlayer).
-    2. Prepare a set of frames for text detection and recognition.
+    1. Read the Image.
     3. Run AI inference for both text detection and recognition.
 
     Parameters:
-        source: The video path.  
+        source: The image path.
         ocr_file_path: The path ro save ocr result text
     """
     import os
