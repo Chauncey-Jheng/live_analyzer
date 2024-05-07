@@ -1,8 +1,8 @@
 # 使用官方 Python 镜像作为基础镜像
 FROM python:3.11-slim
 
-# 安装tmux
-RUN apt-get update && apt-get install -y tmux && \
+# 安装tmux 和 ffmpeg
+RUN apt-get update && apt-get install -y tmux && apt-get install -y ffmpeg && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
