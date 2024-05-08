@@ -35,10 +35,10 @@ https://live.douyin.com/484581718147,主播: 深海鱼油源头工厂
 cd DouyinLiveRecorder
 
 # 开启直播视频获取模块工作
-. recorder_and_analyzer_start.sh
+. live_recorder_start.sh
 
 # 关闭直播视频获取模块工作
-. recorder_and_analyzer_end.sh
+. live_recorder_end.sh
 ```
 
 ## 直播获取模块

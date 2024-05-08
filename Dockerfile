@@ -14,5 +14,4 @@ COPY . /app
 # 安装依赖包
 RUN python -m venv venv && \
     . venv/bin/activate && \
-    pip install --upgrade pip && \
     pip install -r requirements.txt

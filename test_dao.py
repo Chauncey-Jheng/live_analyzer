@@ -9,7 +9,7 @@ def test_通用敏感词():
 def test_变体词():
     variant_words = dao.get_专项变体词()
     print(variant_words)
-    dao.insert_专项变体词("保某养","保养")
+    dao.insert_专项变体词("保某养","保养","正则表达式")
     dao.delete_专项变体词_重复记录()
  
 def test_禁限售():
