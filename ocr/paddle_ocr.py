@@ -12,7 +12,7 @@ if __name__ == "__main__":
 else:
     from . import pre_post_processing
 
-det_model_file_path = Path("ocr/model/ch_PP-OCRv3_det_infer/inference.pdmodel")
+det_model_file_path = Path("ocr/model/ch_PP-OCRv4_det_infer/inference.pdmodel")
 
 # #### Load the Model for Text **Detection** [$\Uparrow$](#Table-of-content:)
 
@@ -26,7 +26,7 @@ det_input_layer = det_compiled_model.input(0)
 det_output_layer = det_compiled_model.output(0)
 
 # #### Download the Model for Text **Recognition** [$\Uparrow$](#Table-of-content:)
-rec_model_file_path = Path("ocr/model/ch_PP-OCRv3_rec_infer/inference.pdmodel")
+rec_model_file_path = Path("ocr/model/ch_PP-OCRv4_rec_infer/inference.pdmodel")
 
 # #### Load the Model for Text **Recognition** with Dynamic Shape [$\Uparrow$](#Table-of-content:)
 # Input to text recognition model refers to detected bounding boxes with different image sizes, for example, dynamic input shapes. Hence:
@@ -225,7 +225,7 @@ def run_paddle_ocr(source, ocr_file_path, skip_frames=30):
             raise RuntimeError("Could not open the video file.")
         
         frame_id = 0
-
+        all_txts = []
         while True:
             # Grab the frame.
             # frame = player.next()
@@ -276,12 +276,15 @@ def run_paddle_ocr(source, ocr_file_path, skip_frames=30):
                     rec_res[indices[beg_img_no + rno]] = rec_result[rno]   
                 if rec_res:
                     txts = [rec_res[i][0] for i in range(len(rec_res))] 
+                    for txt in txts:
+                        if txt not in all_txts:
+                            all_txts.append(txt)
 
-            # Record the ocr txt result
-            with open(ocr_file_path,"w") as f:
-                for i in txts:
-                    f.write(i+" ")
-            
+        # Record the ocr txt result
+        with open(ocr_file_path,"w") as f:
+            for i in all_txts:
+                f.write(i+" ")
+        
     # ctrl-c
     except KeyboardInterrupt:
         print("Interrupted")

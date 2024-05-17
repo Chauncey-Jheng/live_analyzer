@@ -57,8 +57,8 @@ def wave_file_translation(filename:str, asr_file_path:str):
             )
             recognizer.accept_waveform(recognizer.sample_rate, tail_paddings)
             if result != recognizer.text:
-                sys.stdout.write(recognizer.text[len(result):])
-                sys.stdout.flush()
+                # sys.stdout.write(recognizer.text[len(result):])
+                # sys.stdout.flush()
                 result = recognizer.text
 
         recognizer.input_finished()
@@ -91,15 +91,7 @@ def run_kaldi_asr(video_file_path:str, asr_file_path:str):
 
 if __name__ == "__main__":
 
-    video_file_path = "test_files/new.mp4"
-    audio_file_path = "test_files/new.m4a"
-    format_audio_path = "test_files/new.wav"
-    asr_file_path = "test_files/new_asr.txt"
-    # Extract_video_audio(video_file_path, audio_file_path)
-    # try:
-    #     wave_file_translation(audio_file_path)
-    # except:
-    #     print("LOL, I'm break down.")
-    format_audio(audio_file_path, format_audio_path)
-    wave_file_translation(format_audio_path, asr_file_path)
-    wave_file_translation(format_audio_path, asr_file_path)
+    video_file_path = "test_files/999柚美保健品专卖店_2024-04-02_21-56-39_000.mp4"
+    asr_file_path = "test_files/999柚美保健品专卖店_2024-04-02_21-56-39_000_asr.txt"
+
+    run_kaldi_asr(video_file_path, asr_file_path)

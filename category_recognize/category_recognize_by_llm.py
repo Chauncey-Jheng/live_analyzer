@@ -244,7 +244,7 @@ def category_recognize_with_llama(sentence:str):
     )
     # print(completion.choices[0].message)
     result = completion.choices[0].message.content.strip()
-    print(result)
+    # print(result)
 
     if result not in ('Cosmetic','pharmaceutical','health product','medical device',"化妆品","药品","保健品","医疗器械"):
         return None

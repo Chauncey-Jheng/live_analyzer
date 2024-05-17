@@ -10,4 +10,4 @@ mysqlPwd=Example
 
 sqliteFilePath=./live_analyzer_database.db
 
-mysql-to-sqlite3  -f $sqliteFilePath -h $mysqlHost -P $mysqlPort -d $mysqlDatabase -u $mysqlUsername --mysql-password $mysqlPwd
+sqlite3-to-mysql  -f $sqliteFilePath -h $mysqlHost -P $mysqlPort -d $mysqlDatabase -u $mysqlUsername --mysql-password $mysqlPwd

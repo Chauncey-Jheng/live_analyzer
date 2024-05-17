@@ -4,9 +4,11 @@ paddlepaddle
 pyclipper
 shapely
 opencv-python 
+paddleocr
 
 # for asr module
 sherpa_ncnn
+whisper
 
 # for llm_match in text_analysis
 websocket_client
