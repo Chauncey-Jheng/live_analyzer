@@ -8,3 +8,6 @@ venv/
 .venv/
 
 asr/whisper/
+asr/faster-distil-whisper-large-v3/
+asr/faster-whisper-base/
+asr/whisper-base/

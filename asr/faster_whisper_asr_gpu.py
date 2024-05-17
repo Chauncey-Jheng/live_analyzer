@@ -1,20 +1,30 @@
 import subprocess
-import whisper
-
+from faster_whisper import WhisperModel
 # import torch
 # device = "cuda:0" if torch.cuda.is_available() else "cpu"  
 
-model = whisper.load_model("large-v2",download_root="./asr/whisper/")
+base_model_dir = "asr/faster-whisper-base"
+large_v3_model_dir = "asr/faster-distil-whisper-large-v3"
+
+model = WhisperModel(base_model_dir)
 
 def transcribe(audio_path):
-    audio = whisper.load_audio(audio_path)  
-    audio = whisper.pad_or_trim(audio)
-    mel = whisper.log_mel_spectrogram(audio).to(model.device)
-    init_prompt = "中文语句，是普通话。"
-    options = whisper.DecodingOptions(beam_size=5,prompt=init_prompt)
-    result = whisper.decode(model, mel, options)  
-    # print(result.text)
-    return result.text
+
+    # init_prompt = "以下是中文普通话的语句："
+    segments, info = model.transcribe(audio_path, beam_size=5, language="zh")
+
+    # print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
+
+    all_text = ""
+    all_text_with_timestamp = ""
+    for segment in segments:
+        text_with_timestamp = "[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text)
+        # print(text_with_timestamp)
+        all_text += segment.text
+        all_text_with_timestamp += text_with_timestamp + "\n"
+    
+    result = all_text + "\n" + all_text_with_timestamp
+    return result
 
 def Extract_video_audio(video_path, audio_path):
     desired_sample_rate = 16000
@@ -33,7 +43,8 @@ def format_audio(audio_path, format_audio_path):
 def run_whisper_asr(video_file_path:str, asr_file_path:str):
     import os
     if os.path.exists(asr_file_path):
-        return
+        # return
+        pass
     audio_file_path = video_file_path[:-3] + "wav"
     Extract_video_audio(video_file_path, audio_file_path)
     try:
