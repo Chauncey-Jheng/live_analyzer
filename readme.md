@@ -42,7 +42,11 @@ LLAMA_API_KEY=sk-no-key-required
 
 也可以使用llamafile打包预训练模型及其部署环境、http server，一键启动：
 
-llamafile打包模型下载地址：[llama 3](https://huggingface.co/Mozilla/Meta-Llama-3-8B-Instruct-llamafile/resolve/main/Meta-Llama-3-8B-Instruct.Q5_K_M.llamafile?download=true)
+llamafile打包模型下载地址：
+
+[夸克网盘](https://pan.quark.cn/s/287a6dd1e322) 提取码: iLxT
+
+[huggingface llama 3](https://huggingface.co/Mozilla/Meta-Llama-3-8B-Instruct-llamafile/resolve/main/Meta-Llama-3-8B-Instruct.Q5_K_M.llamafile?download=true)
 
 为.llamafile添加可执行权限后，通过如下方式运行：
 
