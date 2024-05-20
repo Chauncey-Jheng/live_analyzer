@@ -71,8 +71,8 @@ def test_variant_match():
             print(result)
         print("调用大模型，跑完所有测试样例，消耗时间为：", time.time()-cur_time)
     
-    test_re_match()
-    # test_correct_match()
+    # test_re_match()
+    test_correct_match()
     # test_llm_match()
 
 def test_ban_sale_match():

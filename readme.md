@@ -2,6 +2,52 @@
 
 这是一个用于下载直播视频并进行实时分析的系统。
 
+## 部署方法
+
+### python 环境安装
+
+首先安装相关的python依赖包。
+
+```bash
+pip install -r requirements.txt
+```
+
+### asr 模型下载
+
+本项目中使用的asr模型包括next-gen kaldi模型以及whisper模型，其中next-gen kaldi模型通过sherpa-ncnn推理框架进行部署，whisper模型采用faster-whisper的base版本。
+
+kaidi模型的下载地址为： 链接：[夸克网盘](https://pan.quark.cn/s/276a8aa25309)  提取码：D2h6
+
+faster-whisper模型的下载地址为：[faster-whisper-base](https://huggingface.co/Systran/faster-whisper-base)
+
+下载完成后，如果为压缩包，请解压。将文件夹放入asr文件夹中。
+
+### 大模型使用方式
+
+本项目中有两种使用大模型的方法，第一种是通过spark api进行推理，第二种是通过本地部署大模型进行推理，使用http通信。
+需要将两种方式的api ID和相关key添加到环境变量中，例如，可以在项目根目录创建一个.env文件，并在其中写入：
+
+```text
+# SparkApi information
+SPARK_APPID=******
+SPARK_API_SECRET=******
+SPARK_API_KEY=******
+
+# local llama information
+LLAMA_BASE_URL=http://127.0.0.1:8080/v1
+LLAMA_API_KEY=sk-no-key-required
+```
+
+本项目采用llama cpp进行预训练大模型的部署推理，采用http server的形式进行交互使用。具体的部署方式可以参考：<https://github.com/ggerganov/llama.cpp/tree/master/examples/server>
+
+也可以使用llamafile打包预训练模型及其部署环境、http server，一键启动：
+
+llamafile打包模型下载地址：[llama 3](https://huggingface.co/Mozilla/Meta-Llama-3-8B-Instruct-llamafile/resolve/main/Meta-Llama-3-8B-Instruct.Q5_K_M.llamafile?download=true)
+
+```bash
+./${llamafile} -ngl 9999 --host 127.0.0.1 --port 8080
+```
+
 ## 添加监管直播链接
 
 在 DouyinLiveRecorder/config/URL_config.ini 文件中, 每一行对应一个直播链接，如下所示：
