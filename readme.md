@@ -44,6 +44,8 @@ LLAMA_API_KEY=sk-no-key-required
 
 llamafile打包模型下载地址：[llama 3](https://huggingface.co/Mozilla/Meta-Llama-3-8B-Instruct-llamafile/resolve/main/Meta-Llama-3-8B-Instruct.Q5_K_M.llamafile?download=true)
 
+为.llamafile添加可执行权限后，通过如下方式运行：
+
 ```bash
 ./${llamafile} -ngl 9999 --host 127.0.0.1 --port 8080
 ```
