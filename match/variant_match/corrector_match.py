@@ -328,7 +328,8 @@ if corrector_kind == 'T5':
     from pycorrector import T5Corrector
     m_T5 = T5Corrector()
 else:
-    m_kenlm = Corrector()
+    model_path = os.path.join(os.path.dirname(__file__), ".pycorrector/datasets/zh_giga.no_cna_cmn.prune01244.klm")
+    m_kenlm = Corrector(language_model_path=model_path)
 
 def match(sentence):
 

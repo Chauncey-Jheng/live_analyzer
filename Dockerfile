@@ -12,6 +12,6 @@ WORKDIR /app
 COPY . /app
 
 # 安装依赖包
-RUN python -m venv venv && \
-    . venv/bin/activate && \
-    pip install -r requirements.txt
+# RUN python -m venv venv && \
+#     . venv/bin/activate && \
+#     pip install -r requirements.txt
