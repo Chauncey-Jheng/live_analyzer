@@ -1,5 +1,5 @@
 import configparser
-config_file = './match/config.ini'
+config_file = './config.ini'
 encoding = 'utf-8-sig'
 config = configparser.RawConfigParser()
 config.read(config_file, encoding=encoding)
@@ -328,7 +328,7 @@ if corrector_kind == 'T5':
     from pycorrector import T5Corrector
     m_T5 = T5Corrector()
 else:
-    model_path = os.path.join(os.path.dirname(__file__), ".pycorrector/datasets/zh_giga.no_cna_cmn.prune01244.klm")
+    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "models/lm/.pycorrector/datasets/zh_giga.no_cna_cmn.prune01244.klm")
     m_kenlm = Corrector(language_model_path=model_path)
 
 def match(sentence):

@@ -407,7 +407,7 @@ def conflict_match_with_llama(sentence,goods_content):
 def match_goods_conflict_match(str):
     '''检测直播文本内容中是否出现在数据库中的商品，如果出现，则对其进行矛盾性检测'''
     import configparser
-    config_file = './match/config.ini'
+    config_file = './config.ini'
     encoding = 'utf-8-sig'
     config = configparser.RawConfigParser()
     config.read(config_file, encoding=encoding)

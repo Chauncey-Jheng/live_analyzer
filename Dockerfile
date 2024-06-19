@@ -1,5 +1,5 @@
 # 使用官方 Python 镜像作为基础镜像
-FROM python:3.11-slim
+FROM nvcr.io/nvidia/pytorch:23.08-py3
 
 # 安装tmux 和 ffmpeg
 RUN apt-get update && apt-get install -y tmux && apt-get install -y ffmpeg && \
@@ -12,6 +12,7 @@ WORKDIR /app
 COPY . /app
 
 # 安装依赖包
-# RUN python -m venv venv && \
-#     . venv/bin/activate && \
-#     pip install -r requirements.txt
+RUN pip install -r requirements.txt
+
+# 修复opencv-python依赖库
+RUN python -c "from opencv_fixer import AutoFix; AutoFix()"

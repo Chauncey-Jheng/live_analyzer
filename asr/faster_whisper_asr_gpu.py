@@ -3,15 +3,15 @@ from faster_whisper import WhisperModel
 # import torch
 # device = "cuda:0" if torch.cuda.is_available() else "cpu"  
 
-base_model_dir = "asr/faster-whisper-base"
-large_v3_model_dir = "asr/faster-distil-whisper-large-v3"
+base_model_dir = "models/asr/faster-whisper-base"
+large_v3_model_dir = "models/asr/faster-distil-whisper-large-v3"
 
 model = WhisperModel(base_model_dir)
 
 def transcribe(audio_path):
 
-    # init_prompt = "以下是中文普通话的语句："
-    segments, info = model.transcribe(audio_path, beam_size=5, language="zh")
+    init_prompt = '中文简体'
+    segments, info = model.transcribe(audio_path, beam_size=5, language="zh", initial_prompt=init_prompt)
 
     # print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
 
@@ -58,6 +58,6 @@ def run_whisper_asr(video_file_path:str, asr_file_path:str):
         print("Something wrong in wave file translation...")
 
 if __name__ == "__main__":
-    video_file_path = "test_files/999柚美保健品专卖店_2024-04-02_21-56-39_000.mp4"
-    asr_file_path = "test_files/999柚美保健品专卖店_2024-04-02_21-56-39_000_asr_gpu.txt"
+    video_file_path = "static/video/sensitive/抖音直播/薇诺娜医用敷料旗舰店/薇诺娜医用敷料旗舰店_2024-06-04_02-11-43_000.mp4"
+    asr_file_path = "static/video/sensitive/抖音直播/薇诺娜医用敷料旗舰店/薇诺娜医用敷料旗舰店_2024-06-04_02-11-43_000_gpu.txt"
     run_whisper_asr(video_file_path, asr_file_path)

@@ -1,0 +1,6 @@
+.git/
+.gitignore
+venv/
+asr/whisper/
+asr/faster-distil-whisper-large-v3/
+models/

@@ -1,14 +1,16 @@
 # for ocr module
 openvino
-paddlepaddle
+paddlepaddle==2.5.2
 pyclipper
 shapely
-opencv-python 
-paddleocr
+opencv-python==4.6.0.66
+paddleocr==2.7.0.3
+opencv-fixer==0.2.5
 
 # for asr module
 sherpa_ncnn
 whisper
+faster-whisper
 
 # for llm_match in text_analysis
 websocket_client

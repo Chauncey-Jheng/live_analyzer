@@ -10,13 +10,13 @@ def create_recognizer():
     # See https://k2-fsa.github.io/sherpa/ncnn/pretrained_models/index.html
     # for download links.
     recognizer = sherpa_ncnn.Recognizer(
-        tokens="asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/tokens.txt",
-        encoder_param="asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/encoder_jit_trace-pnnx.ncnn.param",
-        encoder_bin="asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/encoder_jit_trace-pnnx.ncnn.bin",
-        decoder_param="asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/decoder_jit_trace-pnnx.ncnn.param",
-        decoder_bin="asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/decoder_jit_trace-pnnx.ncnn.bin",
-        joiner_param="asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/joiner_jit_trace-pnnx.ncnn.param",
-        joiner_bin="asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/joiner_jit_trace-pnnx.ncnn.bin",
+        tokens="models/asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/tokens.txt",
+        encoder_param="models/asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/encoder_jit_trace-pnnx.ncnn.param",
+        encoder_bin="models/asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/encoder_jit_trace-pnnx.ncnn.bin",
+        decoder_param="models/asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/decoder_jit_trace-pnnx.ncnn.param",
+        decoder_bin="models/asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/decoder_jit_trace-pnnx.ncnn.bin",
+        joiner_param="models/asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/joiner_jit_trace-pnnx.ncnn.param",
+        joiner_bin="models/asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30/joiner_jit_trace-pnnx.ncnn.bin",
         num_threads=4,
     )
     return recognizer

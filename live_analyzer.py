@@ -4,9 +4,12 @@ import os
 import shutil
 from match import match
 from category_recognize import category_recognize
+import traceback
 
-from asr.kaldi_asr import run_kaldi_asr
-from ocr.paddle_ocr import run_paddle_ocr
+# from asr.kaldi_asr import run_kaldi_asr
+from asr.faster_whisper_asr_gpu import run_whisper_asr
+# from ocr.paddle_ocr import run_paddle_ocr
+from ocr.paddle_ocr_gpu import run_paddle_ocr_gpu
 
 from dao.dao import DAO
 dao = DAO()
@@ -19,7 +22,7 @@ config.read(config_file, encoding=encoding)
 is_keep_normal_live_video = config.get('视频分析配置','是否保留正常内容视频')
 is_open_category_recognize = config.get('视频分析配置','是否开启视频商品分类')
 save_dir = config.get('视频分析配置','线索视频保存地址')
-clue_queue_len = int(config.get('视频分析设置','暂存线索队列最大长度'))
+clue_queue_len = int(config.get('视频分析配置','暂存线索队列最大长度'))
 segment_time = int(config.get('录制设置','视频分段时间(秒)'))
 
 import sqlite3
@@ -27,8 +30,8 @@ import sqlite3
 def video_to_txt(video_file_path:str):
     asr_file_path = video_file_path[:-4] + "_asr.txt"
     ocr_file_path = video_file_path[:-4] + "_ocr.txt"
-    run_kaldi_asr(video_file_path, asr_file_path)
-    run_paddle_ocr(video_file_path, ocr_file_path)
+    run_whisper_asr(video_file_path, asr_file_path)
+    run_paddle_ocr_gpu(video_file_path, ocr_file_path)
     asr_result = ""
     ocr_result = ""
     with open(asr_file_path, "r") as f:
@@ -84,6 +87,9 @@ def save_video(video_file_path:str, liveName:str, liveURL:str, result:str):
         dao.close()
     except shutil.Error as e:
         print(f"Error: {e}")
+        # 获取异常信息的完整堆栈追踪
+        tb_str = traceback.format_exc()
+        print(tb_str)
 
 # 线索暂存队列，该队列用处是用来防止保存一个直播中过多相同的线索视频
 clue_queue = []
@@ -105,7 +111,14 @@ def analyze_video():
         filepath, liveName, liveURL, timestamp, _ = file_data
         # 在这里执行文件分析的操作
         print(f"Analyzing file: {filepath}")
-        asr_txt, ocr_txt = video_to_txt(filepath)
+        try:
+            asr_txt, ocr_txt = video_to_txt(filepath)
+        except FileNotFoundError as e:
+            print(e)
+            c.execute("DELETE FROM files WHERE filepath=?", (filepath,))
+            conn.commit()
+            print("Remove not found file record")
+            continue
         live_txt = asr_txt + "\n" + ocr_txt
         result = match.text_analysis(live_txt)
         print(result)

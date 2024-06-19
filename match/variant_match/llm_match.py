@@ -248,9 +248,18 @@ def variant_word_match_with_llama(sentence):
     # 要识别的内容文本如下:\n
     # """
     prompt = "要识别的话如下:\n"
+    # system_prompt = """
+    # 请仅识别出这段话中第一个为了规避审查而表述的名词变体词，并给出对应原词。你给出的反馈以以下形式给出：
+    # (变体词：具体变体词，原词：具体原词)
+    # 如果这段话中没有变体词，你只需返回“无”。
+    # """
     system_prompt = """
     请仅识别出这段话中第一个为了规避审查而表述的名词变体词，并给出对应原词。你给出的反馈以以下形式给出：
     (变体词：具体变体词，原词：具体原词)
+    例1 (变体词：林床笑果，原词：临床效果)
+    例2 (变体词：蚁生，原词：医生)
+    例3 (变体词：欣闹学管，原词：心脑血管)
+    例4 (变体词：白大褂，原词：医生)
     如果这段话中没有变体词，你只需返回“无”。
     """
     # system_prompt = "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests."

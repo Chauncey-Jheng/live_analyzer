@@ -2,7 +2,7 @@ from . import category_recognize_by_llm
 from . import category_recognize_by_history
 
 import configparser
-config_file = './category_recognize/config.ini'
+config_file = './config.ini'
 encoding = 'utf-8-sig'
 
 def recognize_category(live_name:str, content:str):

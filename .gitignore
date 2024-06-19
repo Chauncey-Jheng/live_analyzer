@@ -7,9 +7,19 @@ asr/sherpa-ncnn-streaming-zipformer-bilingual-zh-en-2023-09-30.zip
 venv/
 .venv/
 
+static/video/
+
 asr/whisper/
 asr/faster-distil-whisper-large-v3/
 asr/faster-whisper-base/
 asr/whisper-base/
 
 match/variant_match/.pycorrector
+
+Meta-Llama-3-8B-Instruct.Q5_K_M.llamafile
+
+Mistral-7b-instruct-v0.2.Q4_0.llamafile
+
+.hypothesis/
+
+models/

@@ -1,0 +1,1 @@
+docker run -i -t --gpus all -it --ipc=host --rm -v ./:/app live_analyzer:v0.0.1

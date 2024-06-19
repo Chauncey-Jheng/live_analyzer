@@ -7,7 +7,7 @@ dao = DAO()
 sensitive_words = [i[0] for i in dao.get_通用敏感词()]
 
 import configparser
-config_file = './match/config.ini'
+config_file = './config.ini'
 encoding = 'utf-8-sig'
 
 def hierarchical_analysis(text:str):

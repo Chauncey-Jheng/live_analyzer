@@ -73,7 +73,7 @@ def test_variant_match():
     
     # test_re_match()
     test_correct_match()
-    # test_llm_match()
+    test_llm_match()
 
 def test_ban_sale_match():
     from match.ban_sale_match import ban_sale_match

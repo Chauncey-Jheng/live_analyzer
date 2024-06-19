@@ -1,9 +1,9 @@
-import cv2
+from cv2 import VideoCapture
 
 from paddleocr import PaddleOCR
-det_model="ocr/model/ch_PP-OCRv4_det_infer"
-rec_model="ocr/model/ch_PP-OCRv4_rec_infer"
-cls_model="ocr/model/ch_ppocr_mobile_v2.0_cls_infer"
+det_model="models/ocr/model/ch_PP-OCRv4_det_infer"
+rec_model="models/ocr/model/ch_PP-OCRv4_rec_infer"
+cls_model="models/ocr/model/ch_ppocr_mobile_v2.0_cls_infer"
 
 ocr = PaddleOCR(det_model_dir=det_model, 
                 rec_model_dir=rec_model, 
@@ -37,7 +37,7 @@ def run_paddle_ocr_gpu(source, ocr_file_path, skip_frames=30):
         # player = ocr_utils.VideoPlayer(source=source, flip=flip, fps=30, skip_first_frames=skip_first_frames)
         # Start video capturing.
         # player.start()
-        cap = cv2.VideoCapture(source)
+        cap = VideoCapture(source)
         if not cap.isOpened():
             raise RuntimeError("Could not open the video file.")
         

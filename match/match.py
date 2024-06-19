@@ -14,7 +14,7 @@ from .ban_sale_match import ban_sale_match
 from .goods_match import goods_conflict_match
 
 import configparser
-config_file = './match/config.ini'
+config_file = './config.ini'
 encoding = 'utf-8-sig'
 
 def text_analysis(txt:str):
